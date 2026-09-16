@@ -314,18 +314,17 @@ const RESP = {
   retomar:   [()=>[NPC.dev,`Bem-vindo de volta!`], ()=>[NPC.lead,`Bora terminar.`]],
 };
 
-// Simula o tempo real que o QA leva pra olhar o projeto — de minutos a
-// alguns dias (a maioria resolve rapido, mas de vez em quando demora, igual
-// review de verdade). A resolucao e por DATA (revisaoResolveEm), nao por
-// setTimeout em memoria — sobrevive a fechar o simulador antes da hora,
-// resolvendo sozinha na proxima vez que o loop rodar (mesmo que seja so
-// quando o jogador abrir o app de novo, dias depois).
+// Simula o tempo real que o QA leva pra olhar o projeto — de 3 a 10 minutos
+// (a maioria resolve rapido, mas nem sempre na hora). A resolucao e por
+// DATA (revisaoResolveEm), nao por setTimeout em memoria — sobrevive a
+// fechar o simulador antes da hora, resolvendo sozinha na proxima vez que
+// o loop rodar. O teto e baixo de proposito: o jogador nao pode ficar
+// travado esperando o QA enquanto usa o simulador.
 function delayRevisaoMs() {
-  const min3 = 3 * 60000, dias2 = 2 * 86400000;
+  const min3 = 3 * 60000, max10 = 10 * 60000;
   // Math.random()*Math.random() enviesa pro lado curto (a maioria das
-  // revisoes resolve rapido), mas ainda deixa escapar ate 2 dias de vez
-  // em quando — nem todo PR e revisado na hora, nem no jogo.
-  return min3 + Math.random() * Math.random() * dias2;
+  // revisoes resolve quase na hora, perto dos 3min).
+  return min3 + Math.random() * Math.random() * (max10 - min3);
 }
 
 function checkRevisoesQA() {
@@ -490,7 +489,7 @@ function sprintCommand(input, s) {
       desativar(proj);
       saveSprint(s);
       const [n,t] = pick(RESP.revisar,id); pushMessage(n,t);
-      return `${clr(C.magenta,'⏳')} #${id} "${proj.titulo}" enviado pra revisão do QA — pode levar minutos, horas ou dias. Comece outro do backlog enquanto espera.`;
+      return `${clr(C.magenta,'⏳')} #${id} "${proj.titulo}" enviado pra revisão do QA — no máximo 10 minutos. Comece outro do backlog enquanto espera.`;
     }
     // commit agora e so uma coisa: salvar o jogo. Nao depende mais de
     // nenhum projeto estar aprovado nem trava a entrega — e o unico ponto
