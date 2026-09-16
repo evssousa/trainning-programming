@@ -101,13 +101,13 @@ BACKLOG → start <nº> → ANDAMENTO → revisar <nº> → EM REVISÃO → conc
   **ANDAMENTO** com o motivo, pra você ajustar e mandar de novo).
 - `concluir <nº>` → só funciona com o projeto já **aprovado** pelo QA. Roda
   `npm test` mais uma vez (confirmação final, tipo um CI antes do merge),
-  marca como entregue e dá XP.
+  marca como entregue e dá score.
 
 Esses comandos (e `pausar`/`retomar`/`commit`) ficam sempre visíveis na
 própria tela do Painel de Sprint, então não precisa decorar nada.
 
 **`commit <mensagem>` é o que salva o jogo em disco.** Sem ele, nada do
-que mudou (XP, sprint, projetos) fica gravado — fechar o simulador sem
+que mudou (score, sprint, projetos) fica gravado — fechar o simulador sem
 commitar volta pro último commit na próxima vez que abrir. `concluir`
 também salva sozinho, por ser um marco por si só, mas qualquer outro
 progresso (começou um projeto, mandou pra revisão...) só é salvo de
@@ -196,13 +196,13 @@ reflete quantos projetos o QA juntou nesse lote, não a sua senioridade:
 Se qualquer um dos dois relógios estourar (horas do projeto ativo, ou dias
 do lote inteiro sem entregar tudo), o QA renegocia mais tempo
 automaticamente — só que isso registra um **aviso de desempenho** e tira
-XP, cada vez mais se acontecer de novo na mesma sprint. Não trava o jogo,
+score, cada vez mais se acontecer de novo na mesma sprint. Não trava o jogo,
 mas pesa no seu histórico.
 
 **Prática diária** — o simulador é vivo: cada dia real que passa sem você
 abrir o app é um dia perdido de verdade, não só um número parado. Se você
 sumir um ou mais dias, ao voltar o Lead comenta a ausência, e isso também
-vira aviso + XP perdido (visível na Ficha do Desenvolvedor, em "Prática
+vira aviso + score perdido (visível na Ficha do Desenvolvedor, em "Prática
 diária"). Entrar todo dia — mesmo que por pouco tempo — é parte do jogo,
 igual seria num emprego de verdade.
 
@@ -222,7 +222,7 @@ O sistema vai:
    pra revisão, ou se voltou reprovado)
 2. Rodar `npm test` mais uma vez — confirmação final, tipo um CI rodando
    antes do merge
-3. Se passou: marcar como entregue, dar XP e notificar os NPCs
+3. Se passou: marcar como entregue, dar score e notificar os NPCs
 4. Sugerir (pelo `[LEAD]`) fazer o merge da feature de volta:
    ```bash
    git checkout dev/seu-nome
@@ -247,7 +247,7 @@ mesmo vocabulário que qualquer time usa no dia a dia — issue, PR, CI — só
 que sem precisar de conta no GitHub.
 
 **A cada 3 projetos entregues**, antes de voltar pro menu aparece um
-**1:1 com o Tech Lead**: um resumo de XP, avisos, atrasos e streak, com
+**1:1 com o Tech Lead**: um resumo de score, avisos, atrasos e streak, com
 uma leitura qualitativa do Rafael sobre o seu ritmo — é a versão do jogo
 pra uma review de performance de verdade. Só leitura, Enter volta pro menu.
 
@@ -284,10 +284,10 @@ cada vez que se repete na mesma sprint:
 
 | Estouro (o que aconteceu) | Consequência |
 |---|---|
-| 1ª reestimativa na sprint (horas do projeto ou dias do lote) | -5 XP + 1 aviso |
-| 2ª reestimativa na mesma sprint | -10 XP + 1 aviso |
-| 3ª reestimativa na mesma sprint | -15 XP + 1 aviso (e por aí vai) |
-| Dia inteiro sem abrir o simulador | -5 XP por dia perdido + 1 aviso |
+| 1ª reestimativa na sprint (horas do projeto ou dias do lote) | -5 pts + 1 aviso |
+| 2ª reestimativa na mesma sprint | -10 pts + 1 aviso |
+| 3ª reestimativa na mesma sprint | -15 pts + 1 aviso (e por aí vai) |
+| Dia inteiro sem abrir o simulador | -5 pts por dia perdido + 1 aviso |
 
 Avisos e a contagem de dias seguidos ficam registrados na sua **Ficha do
 Desenvolvedor**. O objetivo é ir ajustando o ritmo com a prática — dá pra
@@ -322,13 +322,15 @@ dividido em passos menores. Os primeiros projetos são bem curtos, e a dificulda
 aos poucos — nenhum projeto pede um conceito que o tópico dele ainda não ensinou. O
 README de cada um diz, na linha **"Tópico da trilha"**, qual assunto ele pratica.
 O projeto `32-integrador-fase1` usa conceitos de todos os anteriores.
-Quando todos estiverem `[ENTREGUE]`, você terá XP suficiente para o próximo nível.
+Quando todos estiverem `[ENTREGUE]` (incluindo o bônus `33` abaixo), você promove pro
+próximo nível — a promoção depende de terminar a trilha inteira, não de um número de
+score acumulado.
 
 **Bônus — `33-refatoracao-modulo-descontos`:** os 32 anteriores são todos "criar do
 zero"; esse é diferente — o código **já existe** (funcionando, mas malfeito e com um
 bug escondido) e a tarefa é ler, entender, consertar e refatorar sem quebrar o que já
-funciona. É metade do trabalho real de um dev: manutenção, não só criação. Vale os
-mesmos XP e entra na fila normalmente depois do `32`.
+funciona. É metade do trabalho real de um dev: manutenção, não só criação. Vale o
+mesmo score e entra na fila normalmente depois do `32`.
 
 ---
 

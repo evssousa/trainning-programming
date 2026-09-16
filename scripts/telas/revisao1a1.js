@@ -2,13 +2,13 @@
 
 // Tela de "1:1 com o Tech Lead" — nao e um item do menu, e um interstício
 // disparado pelo sprint.js a cada N projetos entregues (ver CADENCIA_1A1),
-// igual o Daily Standup. Junta metricas que ja existem espalhadas (XP,
+// igual o Daily Standup. Junta metricas que ja existem espalhadas (score,
 // avisos, atrasos, streak) num resumo so, com uma leitura qualitativa do
 // Lead — e o analogo de uma review de performance de verdade.
 
 const { C, INN, LINE, bold, cen, clr, dim, row } = require('../core/ansi');
-const { LEVELS, contarProjetos, getLevel, loadProgress } = require('../core/dados');
-const { xpBar } = require('../core/draw-utils');
+const { LEVELS, contarProjetos, contarProjetosNivel, getLevel, loadProgress } = require('../core/dados');
+const { progressBar } = require('../core/draw-utils');
 const { goTo, render } = require('../core/screen');
 
 const CADENCIA_1A1 = 3; // a cada 3 projetos entregues
@@ -42,9 +42,10 @@ function leituraDoLead(p) {
 
 function buildRevisao1a1() {
   const p = loadProgress();
-  const { lv, idx } = getLevel(p.xp);
+  const { lv, idx } = getLevel();
   const proj = contarProjetos();
-  const next = lv.xpMax !== null ? LEVELS[idx + 1] : null;
+  const next = idx < LEVELS.length - 1 ? LEVELS[idx + 1] : null;
+  const nivelProj = next ? contarProjetosNivel(lv.folder) : null;
 
   let o = C.cls + C.hide;
   o += `╔${LINE}╗\n`;
@@ -53,15 +54,20 @@ function buildRevisao1a1() {
   o += `╠${LINE}╣\n`;
   o += row('') + '\n';
   o += row(`  ${clr(C.gray,'Nível atual        ')}  ${bold(clr(C.yellow,lv.name))}`) + '\n';
-  o += row(`  ${clr(C.gray,'XP total           ')}  ${clr(C.cyan,String(p.xp))} XP`) + '\n';
+  o += row(`  ${clr(C.gray,'Score total        ')}  ${clr(C.cyan,String(p.score))} pts`) + '\n';
   o += row(`  ${clr(C.gray,'Projetos entregues ')}  ${clr(C.green,String(proj.concluidos))}/${proj.total}`) + '\n';
   o += row(`  ${clr(C.gray,'Avisos de desempenho')} ${p.avisos > 0 ? clr(C.yellow,String(p.avisos)) : clr(C.green,'0')}`) + '\n';
   o += row(`  ${clr(C.gray,'Sprints atrasadas  ')}  ${p.atrasadas > 0 ? clr(C.yellow,String(p.atrasadas)) : clr(C.green,'0')}`) + '\n';
   o += row(`  ${clr(C.gray,'Prática diária     ')}  ${clr(C.cyan,String(p.diasSeguidos||0))} dia(s) seguido(s)${p.diasFaltados>0 ? clr(C.gray,`  (${p.diasFaltados} perdido(s) ao todo)`) : ''}`) + '\n';
   o += row('') + '\n';
   o += `╠${LINE}╣\n`;
-  o += row(`  ${xpBar(p.xp, lv, 40)}`) + '\n';
-  if (next) o += row(`  ${clr(C.gray,'→')} ${clr(C.yellow,next.name)} em ${clr(C.cyan,String(lv.xpMax+1-p.xp)+' XP')}`) + '\n';
+  if (next && nivelProj.total > 0) {
+    o += row(`  ${progressBar(nivelProj.concluidos, { min:0, max: Math.max(nivelProj.total-1,0) }, 40)}`) + '\n';
+    const faltam = nivelProj.total - nivelProj.concluidos;
+    o += row(`  ${clr(C.gray,'→')} ${clr(C.yellow,next.name)} após entregar mais ${clr(C.cyan,String(faltam)+' projeto(s)')}`) + '\n';
+  } else if (next) {
+    o += row(`  ${clr(C.gray,'→')} ${clr(C.yellow,next.name)} — ${clr(C.gray,'aguardando novos projetos no nível atual')}`) + '\n';
+  }
   o += `╠${LINE}╣\n`;
   o += row(bold(' RAFAEL (TECH LEAD)')) + '\n';
   o += `╠${LINE}╣\n`;

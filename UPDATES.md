@@ -1,5 +1,25 @@
 # Atualizações
 
+## 2026-09-16 (2)
+- 🔁 **XP renomeado para "score"**: já que a pontuação não decide mais promoção de
+  nível (ver entrada anterior), ela vira o que sempre devia ter sido — um placar
+  comparativo entre jogadores, estilo jogo retrô, não uma moeda de progressão.
+  Campo `progress.json` → `xp` virou `score` (saves antigos migram sozinhos ao
+  carregar); `LEVELS` perdeu de vez os campos de faixa de pontuação por nível; a
+  função de barra de progresso saiu de `xpBar` pra `progressBar` (genérica, usada
+  tanto pro score quanto pra contagem de projetos entregues). Telas passaram a
+  mostrar "Score: N pts" em vez de "XP: N".
+
+## 2026-09-16
+- 🔁 **Promoção de nível deixa de ser por XP e passa a ser por trilha completa**:
+  o jogador só sobe de senioridade depois de entregar (`.concluido`) **todos** os
+  projetos do nível atual — mesmo que o XP já alcance a faixa do próximo nível, não
+  promove sem terminar a trilha inteira. Objetivo: mais confiança de verdade no
+  próximo nível, não só pontuação. Níveis sem projeto cadastrado ainda (todos além do
+  Estagiário, por ora) não promovem sozinhos — o jogador fica parado neles até
+  ganharem conteúdo. XP continua existindo (penalidades, ficha), só não decide mais
+  promoção. Ver `getLevel()`/`contarProjetosNivel()` em `scripts/core/dados.js`.
+
 ## 2026-09-15 (2)
 - 📖 **Roteiro (`AULAS.md`) ampliado** com disciplinas que ainda não apareciam
   explicitamente na trilha, pedidas pelo usuário — inseridas dentro das 14 fases já

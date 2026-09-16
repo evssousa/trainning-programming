@@ -44,7 +44,7 @@ function doReset() {
   if (removed === 0) {
     console.log('\n  Nada para resetar — o sistema já está zerado.\n');
   } else {
-    console.log(`\n  Sistema resetado (${removed} arquivo(s) removidos). Nome, XP, sprint, mensagens e projetos entregues voltaram ao estado inicial.\n`);
+    console.log(`\n  Sistema resetado (${removed} arquivo(s) removidos). Nome, score, sprint, mensagens e projetos entregues voltaram ao estado inicial.\n`);
   }
 }
 
@@ -54,7 +54,7 @@ if (skipConfirm || !process.stdin.isTTY) {
   doReset();
 } else {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-  rl.question('  Isso vai apagar nome, XP, sprint, mensagens e o progresso dos projetos entregues. Confirmar? (s/N) ', (answer) => {
+  rl.question('  Isso vai apagar nome, score, sprint, mensagens e o progresso dos projetos entregues. Confirmar? (s/N) ', (answer) => {
     rl.close();
     if (/^s(im)?$/i.test(answer.trim())) {
       doReset();

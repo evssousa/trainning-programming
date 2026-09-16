@@ -4,9 +4,12 @@ const { C, SPARK_CH, clr } = require('./ansi');
 const { APP } = require('./app');
 const { fmtMs, horaAtual, tempoAtivoTotal } = require('./dados');
 
-function xpBar(xp, lv, w=26) {
-  if (lv.xpMax === null) return clr(C.cyan, '█'.repeat(w)) + ' MAX';
-  const pct = (xp - lv.xpMin) / (lv.xpMax - lv.xpMin + 1);
+// Barra de progresso generica — usada tanto pro placar (score) quanto pra
+// contagem de projetos entregues por nivel, cada tela passa seu proprio
+// range { min, max }.
+function progressBar(value, range, w=26) {
+  if (range.max === null) return clr(C.cyan, '█'.repeat(w)) + ' MAX';
+  const pct = (value - range.min) / (range.max - range.min + 1);
   const filled = Math.round(pct * w);
   return clr(C.cyan, '█'.repeat(filled)) + clr(C.gray, '░'.repeat(w-filled));
 }
@@ -55,4 +58,4 @@ function timerLine(s) {
   return `${clr(C.gray,'Hora:')} ${hora}  ${clr(C.green,'▶')} ${rot}${fmtMs(ativo)} / ${est}h  (faltam ${clr(C.cyan,fmtMs(estMs-ativo))})`;
 }
 
-module.exports = { xpBar, metBar, sparkline, timerLine };
+module.exports = { progressBar, metBar, sparkline, timerLine };

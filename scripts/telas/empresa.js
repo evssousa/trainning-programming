@@ -22,7 +22,7 @@ function buildEmpresa() {
   o += `╔${LINE}╗\n`;
   o += cen(bold('DEVTECH SISTEMAS S.A.  ─  Monitor Corporativo')) + '\n';
   o += row(` ${clr(C.gray,dataAtual())}  ${' '.repeat(40)}  ${clr(C.cyan,horaAtual())}`) + '\n';
-  o += row(` Dev: ${bold(p.name)}   XP: ${clr(C.cyan,String(p.xp))}   Projetos: ${clr(C.green,`${pj.concluidos}/${pj.total}`)}`) + '\n';
+  o += row(` Dev: ${bold(p.name)}   Score: ${clr(C.cyan,String(p.score))}   Projetos: ${clr(C.green,`${pj.concluidos}/${pj.total}`)}`) + '\n';
   o += `╠${LINE}╣\n`;
   o += row(bold(' STATUS DOS SISTEMAS')) + '\n';
   o += `╠${LINE}╣\n`;
@@ -110,17 +110,20 @@ function tickEmpresa() {
     }, 60000 + Math.random()*60000);
   }
 
-  // XP change detection
+  // Score change detection
   const p = loadProgress();
-  if (APP._xpPrev !== undefined && p.xp > APP._xpPrev)
-    pushFeed(NPC.lead, `+${p.xp - APP._xpPrev} XP ganho. Total: ${p.xp} XP.`, 'ok');
-  APP._xpPrev = p.xp;
+  if (APP._scorePrev !== undefined && p.score > APP._scorePrev)
+    pushFeed(NPC.lead, `+${p.score - APP._scorePrev} pts. Score total: ${p.score}.`, 'ok');
+  APP._scorePrev = p.score;
 
-  // Promocao de nivel — hora de "fechar a release": sugere subir uma
-  // release/* pra main e taguear (so aviso narrativo, nunca automatico).
-  const nivelIdx = getLevel(p.xp).idx;
+  // Promocao de nivel — agora so acontece quando todos os projetos do
+  // nivel atual foram entregues (ver getLevel() em core/dados.js), nao mais
+  // por pontuacao. Quando acontece, e hora de "fechar a release": sugere
+  // subir uma release/* pra main e taguear (so aviso narrativo, nunca
+  // automatico).
+  const nivelIdx = getLevel().idx;
   if (APP._nivelPrevIdx !== undefined && nivelIdx > APP._nivelPrevIdx) {
-    const lv = getLevel(p.xp).lv;
+    const lv = getLevel().lv;
     pushFeed(NPC.lead, `Promovido pra ${lv.name}! Hora de fechar a release.`, 'ok');
     pushMessage(NPC.lead, `Parabéns, ${lv.name}! Sugestão: git checkout -b release/${lv.folder} a partir de develop, testa tudo, e daí sim merge em main + tag.`);
   }

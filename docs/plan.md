@@ -17,7 +17,7 @@ O sistema abre com uma tela de boot animada e um menu principal com navegação 
 Telas disponíveis no menu:
 1. **Sistema Corporativo** — monitor em tempo real com animações, NPCs, métricas
 2. **Painel de Sprint** — board de tarefas interativo com input de comandos
-3. **Ficha do Desenvolvedor** — nível, XP, salário, avisos de desempenho
+3. **Ficha do Desenvolvedor** — nível, score, salário, avisos de desempenho
 4. **Quadro de Projetos** — todos os projetos com status
 5. **Trilha de Estudos** — currículo com scroll por ↑↓
 6. **GitHub (simulado)** — Issues, Pull Requests, Actions, Commits e README
@@ -38,7 +38,7 @@ scripts/
 │   ├── ansi.js               cores, caixas, truncamento de texto
 │   ├── app.js                estado global (APP), menu, feed corporativo
 │   ├── dados.js               paths, NPCs, load/save (sprint/progress/mensagens)
-│   ├── draw-utils.js          barra de XP, medidor, sparkline, timer da tarefa
+│   ├── draw-utils.js          barra de progresso (score/projetos), medidor, sparkline, timer da tarefa
 │   ├── gitflow.js             leitura da branch atual (nunca cria/muda nada)
 │   ├── lint.js                roda o ESLint (eslint.config.js) no "concluir"
 │   ├── screen.js              indireção pra render()/goTo() sem ciclo de require
@@ -48,7 +48,7 @@ scripts/
 │   └── projetos.js  aulas.js  github.js  standup.js
 └── reset.js               ← `npm run resetar`
 .devtech/
-├── progress.json       ← XP, nome, avisos, atrasos (não edite manualmente)
+├── progress.json       ← score, nome, avisos, atrasos (não edite manualmente)
 ├── sprint.json         ← estado da sprint ativa
 └── messages.json       ← histórico de mensagens dos NPCs
 AULAS.md                 ← índice da trilha (14 fases) — fica na RAIZ, de propósito: é
@@ -101,12 +101,12 @@ tarefas) — cada projeto do lote é uma unidade só, sem sub-tarefas dentro del
    você esteja trabalhando em outro no momento — **a prioridade continua sempre com o
    projeto que você está ativamente codando**, o aprovado só espera vez).
 7. `concluir <nº>` no projeto aprovado — roda `npm test` de novo, marca `.concluido` e dá
-   XP (escala com o tamanho do projeto). Se ainda sobrar projeto aberto no lote, a sprint
+   score (escala com o tamanho do projeto). Se ainda sobrar projeto aberto no lote, a sprint
    continua; só quando o lote inteiro é entregue é que o QA solta o próximo (1 a 3 de novo).
-   - Prazo por projeto estourado: penalidade de XP + aviso, aplicada na hora do estouro,
+   - Prazo por projeto estourado: penalidade de score + aviso, aplicada na hora do estouro,
      não só na entrega (ver `UPDATES.md`)
 8. `commit <mensagem>`, a qualquer momento — **é o único ponto em que o jogo é salvo em
-   disco** (XP, sprint, projetos, tempo). Sem commit, nada do que mudou desde o último é
+   disco** (score, sprint, projetos, tempo). Sem commit, nada do que mudou desde o último é
    persistido; se fechar o simulador sem commitar, o progresso volta pro último commit na
    próxima vez que abrir. O jogador decide a hora de commitar. `concluir` também salva
    sozinho, por ser um marco por si só.
@@ -212,35 +212,52 @@ o projeto com o cronômetro ligado (`s.projetoAtivoId`):
 | Limiar | Evento |
 |---|---|
 | **80%** de `estimativaHoras` | PM Marcos avisa no chat; ícone ⚡ no timer |
-| **100%** (estourou) | QA renegocia +50% do tempo estimado (mín. 15min) sozinho — registra `extensoesQA` no projeto, -5 XP na 1ª extensão da sprint, -10 na 2ª, escalando (`5 * extensoesQA`) |
+| **100%** (estourou) | QA renegocia +50% do tempo estimado (mín. 15min) sozinho — registra `extensoesQA` no projeto, -5 pts na 1ª extensão da sprint, -10 na 2ª, escalando (`5 * extensoesQA`) |
 
 **Prazo em dias corridos, por LOTE** (`checkPrazoSprint()`) — mede o lote inteiro desde
 `s.loteAtribuidoEm`, não cada projeto:
 
 | Limiar | Evento |
 |---|---|
-| Prazo do lote batido (`s.lotePrazoDias`) sem tudo entregue | QA consegue extensão com o PM — metade do prazo original, mínimo 3 dias — registra `s.loteExtensoesQA`, mesma escala de XP (`5 * loteExtensoesQA`) |
+| Prazo do lote batido (`s.lotePrazoDias`) sem tudo entregue | QA consegue extensão com o PM — metade do prazo original, mínimo 3 dias — registra `s.loteExtensoesQA`, mesma escala de pts (`5 * loteExtensoesQA`) |
 
 Nenhum dos dois trava o jogo (Esc continua livre) — só registra aviso de desempenho
-(`progress.avisos`) e tira XP. Avisos ficam visíveis na **Ficha do Desenvolvedor**.
+(`progress.avisos`) e tira score. Avisos ficam visíveis na **Ficha do Desenvolvedor**.
 
 ---
 
-## Progressão de níveis (XP)
+## Progressão de níveis
 
-| Nível | XP mínimo | Salário |
-|---|---|---|
-| Estagiário | 0 | R$ 800–R$ 1.500 |
-| Trainee | 150 | R$ 2.000–R$ 3.500 |
-| Junior I | 350 | R$ 3.000–R$ 4.500 |
-| Junior II | 600 | R$ 4.000–R$ 5.500 |
-| Junior III | 900 | R$ 5.000–R$ 7.000 |
-| Pleno I | 1.250 | R$ 6.500–R$ 9.000 |
-| Pleno II | 1.650 | R$ 8.500–R$ 11.000 |
-| Pleno III | 2.100 | R$ 10.000–R$ 14.000 |
-| Sênior I | 2.600 | R$ 13.000–R$ 17.000 |
-| Sênior II | 3.150 | R$ 16.000–R$ 22.000 |
-| Sênior III | 3.750 | R$ 20.000–R$ 30.000+ |
+A promoção **não é por score acumulado** — é por ter entregue (`.concluido`)
+**todos** os projetos do nível atual. Isso vale mesmo que o score do jogador já
+seja alto: sem completar a trilha inteira, não promove.
+A ideia é dar mais confiança pro próximo nível — o jogador só sobe depois de
+praticar tudo que o nível atual tinha pra oferecer.
+
+Um nível sem nenhum projeto cadastrado ainda (a maioria, hoje — só
+"Estagiário" tem trilha completa) não conta como "completo": o jogador fica
+parado nele até a trilha ganhar conteúdo, em vez de pular direto pro topo.
+Ver `getLevel()`/`contarProjetosNivel()` em `scripts/core/dados.js`.
+
+O **score** (`progress.json` → `score`, campo que já se chamou `xp`) continua existindo
+como placar — soma ao entregar projeto, cai com penalidade de atraso/falta — mas
+serve só de comparativo entre jogadores, estilo jogo retrô, e não gatilha mais
+promoção. `LEVELS` (`scripts/core/dados.js`) não tem mais faixa de pontuação por
+nível — só nome, faixa salarial, pasta de projetos e fase da trilha.
+
+| Nível | Salário |
+|---|---|
+| Estagiário | R$ 800–R$ 1.500 |
+| Trainee | R$ 2.000–R$ 3.500 |
+| Junior I | R$ 3.000–R$ 4.500 |
+| Junior II | R$ 4.000–R$ 5.500 |
+| Junior III | R$ 5.000–R$ 7.000 |
+| Pleno I | R$ 6.500–R$ 9.000 |
+| Pleno II | R$ 8.500–R$ 11.000 |
+| Pleno III | R$ 10.000–R$ 14.000 |
+| Sênior I | R$ 13.000–R$ 17.000 |
+| Sênior II | R$ 16.000–R$ 22.000 |
+| Sênior III | R$ 20.000–R$ 30.000+ |
 
 ---
 
@@ -270,7 +287,7 @@ O lote da sprint (1 a 3 projetos) é montado sozinho pelo QA — não existe mai
 | `ver <nº>` | Mostra o status do projeto |
 | `start <nº>` | Começa ou retoma o projeto — vira o "ativo" (o cronômetro segue ele) |
 | `revisar <nº>` | Manda pro QA — roda lint + `npm test` de verdade e aprova/reprova com motivo, em tempo real (minutos a dias) |
-| `concluir <nº>` | Só com o projeto aprovado — roda `npm test` de novo, marca `.concluido` e dá XP |
+| `concluir <nº>` | Só com o projeto aprovado — roda `npm test` de novo, marca `.concluido` e dá score |
 | `commit <mensagem>` | A qualquer momento — **é o que salva o jogo em disco** (ver seção de salvamento acima) |
 | `pausar` / `retomar` | Pausa/retoma o timer do projeto ativo |
 | Esc | Volta ao menu principal |

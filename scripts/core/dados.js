@@ -76,26 +76,38 @@ const RESOLUCOES = [
 // um LOTE de projetos, ele depende de quantos projetos foram juntados no
 // lote (3/7/15 dias), nao do nivel. Ver prazoLotePara() em scripts/telas/sprint.js.
 const LEVELS = [
-  { name: 'Estagiário', xpMin: 0,    xpMax: 149,  salary: 'R$ 800–R$ 1.500',     folder: 'estagiario', fase: 1  },
-  { name: 'Trainee',    xpMin: 150,  xpMax: 349,  salary: 'R$ 2.000–R$ 3.500',   folder: 'trainee',    fase: 2  },
-  { name: 'Junior I',   xpMin: 350,  xpMax: 599,  salary: 'R$ 3.000–R$ 4.500',   folder: 'junior-1',   fase: 3  },
-  { name: 'Junior II',  xpMin: 600,  xpMax: 899,  salary: 'R$ 4.000–R$ 5.500',   folder: 'junior-2',   fase: 5  },
-  { name: 'Junior III', xpMin: 900,  xpMax: 1249, salary: 'R$ 5.000–R$ 7.000',   folder: 'junior-3',   fase: 6  },
-  { name: 'Pleno I',    xpMin: 1250, xpMax: 1649, salary: 'R$ 6.500–R$ 9.000',   folder: 'pleno-1',    fase: 7  },
-  { name: 'Pleno II',   xpMin: 1650, xpMax: 2099, salary: 'R$ 8.500–R$ 11.000',  folder: 'pleno-2',    fase: 8  },
-  { name: 'Pleno III',  xpMin: 2100, xpMax: 2599, salary: 'R$ 10.000–R$ 14.000', folder: 'pleno-3',    fase: 9  },
-  { name: 'Sênior I',   xpMin: 2600, xpMax: 3149, salary: 'R$ 13.000–R$ 17.000', folder: 'senior-1',   fase: 11 },
-  { name: 'Sênior II',  xpMin: 3150, xpMax: 3749, salary: 'R$ 16.000–R$ 22.000', folder: 'senior-2',   fase: 13 },
-  { name: 'Sênior III', xpMin: 3750, xpMax: null, salary: 'R$ 20.000–R$ 30.000+',folder: 'senior-3',   fase: 14 },
+  { name: 'Estagiário', salary: 'R$ 800–R$ 1.500',      folder: 'estagiario', fase: 1  },
+  { name: 'Trainee',    salary: 'R$ 2.000–R$ 3.500',    folder: 'trainee',    fase: 2  },
+  { name: 'Junior I',   salary: 'R$ 3.000–R$ 4.500',    folder: 'junior-1',   fase: 3  },
+  { name: 'Junior II',  salary: 'R$ 4.000–R$ 5.500',    folder: 'junior-2',   fase: 5  },
+  { name: 'Junior III', salary: 'R$ 5.000–R$ 7.000',    folder: 'junior-3',   fase: 6  },
+  { name: 'Pleno I',    salary: 'R$ 6.500–R$ 9.000',    folder: 'pleno-1',    fase: 7  },
+  { name: 'Pleno II',   salary: 'R$ 8.500–R$ 11.000',   folder: 'pleno-2',    fase: 8  },
+  { name: 'Pleno III',  salary: 'R$ 10.000–R$ 14.000',  folder: 'pleno-3',    fase: 9  },
+  { name: 'Sênior I',   salary: 'R$ 13.000–R$ 17.000',  folder: 'senior-1',   fase: 11 },
+  { name: 'Sênior II',  salary: 'R$ 16.000–R$ 22.000',  folder: 'senior-2',   fase: 13 },
+  { name: 'Sênior III', salary: 'R$ 20.000–R$ 30.000+', folder: 'senior-3',   fase: 14 },
 ];
 
-function getLevel(xp) {
-  for (let i = LEVELS.length - 1; i >= 0; i--)
-    if (xp >= LEVELS[i].xpMin) return { lv: LEVELS[i], idx: i };
-  return { lv: LEVELS[0], idx: 0 };
+// O nivel atual vem de ter entregue (.concluido) todos os projetos do nivel
+// em que o jogador esta — nao de pontuacao acumulada. O score (ex-XP)
+// continua existindo (penalidades, ficha, etc.), mas so como um placar
+// comparativo entre jogadores, estilo jogo retro — nao gatilha mais
+// promocao: entregar tudo antes de subir da mais confianca pro proximo
+// nivel do que so acumular pontos.
+// Um nivel sem nenhum projeto ainda cadastrado (total === 0 — a maioria,
+// hoje: so "estagiario" tem trilha completa) NAO conta como "completo":
+// o jogador fica parado nele ate a trilha ganhar conteudo, em vez de pular
+// direto pro ultimo nivel so porque nao ha nada pra fazer no meio do caminho.
+function getLevel() {
+  for (let i = 0; i < LEVELS.length; i++) {
+    const { concluidos, total } = contarProjetosNivel(LEVELS[i].folder);
+    if (!(total > 0 && concluidos >= total)) return { lv: LEVELS[i], idx: i };
+  }
+  return { lv: LEVELS[LEVELS.length - 1], idx: LEVELS.length - 1 };
 }
 
-const PROGRESS_DEFAULT = { name: 'Dev', xp: 0, avisos: 0, atrasadas: 0, ultimoAcessoEm: null, diasSeguidos: 0, diasFaltados: 0 };
+const PROGRESS_DEFAULT = { name: 'Dev', score: 0, avisos: 0, atrasadas: 0, ultimoAcessoEm: null, diasSeguidos: 0, diasFaltados: 0 };
 
 // ── Salvamento em disco atrelado ao "commit" ────────────────────────────
 // Nada disso (progress.json, sprint.json, messages.json) vai pro disco na
@@ -116,6 +128,10 @@ function loadProgress() {
   if (!fs.existsSync(PROGRESS_FILE)) { _progressCache = { ...PROGRESS_DEFAULT }; return _progressCache; }
   try {
     const p = JSON.parse(fs.readFileSync(PROGRESS_FILE, 'utf8'));
+    // save de uma versao anterior, quando o placar ainda se chamava "xp" —
+    // migra o valor pro campo novo em vez de zerar o progresso de quem ja
+    // vinha jogando.
+    if ('xp' in p && !('score' in p)) { p.score = p.xp; delete p.xp; }
     for (const k of Object.keys(PROGRESS_DEFAULT)) if (!(k in p)) p[k] = PROGRESS_DEFAULT[k];
     _progressCache = p;
   } catch { _progressCache = { ...PROGRESS_DEFAULT }; }
@@ -227,6 +243,22 @@ function contarProjetos() {
   return { concluidos:c, total:t };
 }
 
+// Mesma contagem de contarProjetos(), mas so dentro da pasta de UM nivel —
+// e o que decide se aquele nivel especifico ja foi todo entregue (ver
+// getLevel() acima).
+function contarProjetosNivel(folder) {
+  const np = path.join(PROJECTS_DIR, folder);
+  if (!fs.existsSync(np)) return { concluidos:0, total:0 };
+  let c=0, t=0;
+  for (const pj of fs.readdirSync(np)) {
+    const pp = path.join(np, pj);
+    if (!fs.statSync(pp).isDirectory()) continue;
+    t++;
+    if (fs.existsSync(path.join(pp, '.concluido'))) c++;
+  }
+  return { concluidos:c, total:t };
+}
+
 function localDateStr(d) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
@@ -261,10 +293,10 @@ function checkAcessoDiario() {
   p.diasFaltados  = (p.diasFaltados || 0) + faltados;
   p.avisos        = (p.avisos || 0) + 1;
   const penalidade = 5 * faltados;
-  p.xp            = Math.max(0, p.xp - penalidade);
+  p.score         = Math.max(0, p.score - penalidade);
   p.diasSeguidos  = 1;
   saveProgress(p);
-  return { tipo: 'falta', dias: faltados, xp: penalidade };
+  return { tipo: 'falta', dias: faltados, score: penalidade };
 }
 
-module.exports = { ROOT, DATA_DIR, SPRINT_FILE, PROGRESS_FILE, MESSAGES_FILE, AULAS_FILE, AULAS_DIR, PROJECTS_DIR, NPC, MSGS_AMBIENTE, INCIDENTES, RESOLUCOES, LEVELS, getLevel, PROGRESS_DEFAULT, loadProgress, saveProgress, loadSprint, saveSprint, loadMessages, pushMessage, tempoAtivoTotal, fmtMs, horaAtual, dataAtual, contarProjetos, localDateStr, diasEntreDatas, checkAcessoDiario, persistirJogo, haAlteracoesNaoSalvas };
+module.exports = { ROOT, DATA_DIR, SPRINT_FILE, PROGRESS_FILE, MESSAGES_FILE, AULAS_FILE, AULAS_DIR, PROJECTS_DIR, NPC, MSGS_AMBIENTE, INCIDENTES, RESOLUCOES, LEVELS, getLevel, PROGRESS_DEFAULT, loadProgress, saveProgress, loadSprint, saveSprint, loadMessages, pushMessage, tempoAtivoTotal, fmtMs, horaAtual, dataAtual, contarProjetos, contarProjetosNivel, localDateStr, diasEntreDatas, checkAcessoDiario, persistirJogo, haAlteracoesNaoSalvas };

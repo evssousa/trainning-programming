@@ -18,7 +18,7 @@ Isso é **metade do trabalho de um dev de verdade**: você não vai só escrever
 novo pra sempre — boa parte do tempo é ler o que já existe, entender por que quebrou,
 consertar sem quebrar mais nada, e deixar melhor do que encontrou.
 
-**Nível:** Estagiário (extra — fora da sequência numerada, mas vale os mesmos XP)
+**Nível:** Estagiário (extra — fora da sequência numerada, mas vale o mesmo score)
 **Sprint:** Estagiário — Manutenção e Refatoração
 **Estimativa:** 2h 30m  
 **Prioridade:** Alta (chamado de cliente)

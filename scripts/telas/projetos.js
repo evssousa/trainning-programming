@@ -5,7 +5,7 @@ const path = require('path');
 const { C, LINE, bold, cen, clr, dim, row } = require('../core/ansi');
 const { APP } = require('../core/app');
 const { LEVELS, PROJECTS_DIR, contarProjetos, loadSprint } = require('../core/dados');
-const { xpBar } = require('../core/draw-utils');
+const { progressBar } = require('../core/draw-utils');
 const { render } = require('../core/screen');
 const { renderMarkdown } = require('../core/texto');
 
@@ -53,7 +53,7 @@ function buildProjetos() {
   let o = C.cls + C.hide;
   o += `╔${LINE}╗\n`;
   o += cen(bold('DEVTECH SISTEMAS S.A.  ─  Quadro de Projetos')) + '\n';
-  o += row(` ${clr(C.green,String(proj.concluidos))}/${proj.total} projetos entregues  ${xpBar(proj.concluidos, {xpMin:0,xpMax:proj.total-1}, 30)}`) + '\n';
+  o += row(` ${clr(C.green,String(proj.concluidos))}/${proj.total} projetos entregues  ${progressBar(proj.concluidos, {min:0,max:proj.total-1}, 30)}`) + '\n';
   if (total > visible)
     o += row(dim(`  [${scroll+1}-${Math.min(scroll+visible,total)} de ${total}]`)) + '\n';
   o += `╠${LINE}╣\n`;
