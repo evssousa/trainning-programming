@@ -35,7 +35,7 @@ const APP = {
 const MENU_ITEMS = [
   { key:'1', label:'Sistema Corporativo',      desc:'Monitor em tempo real da empresa' },
   { key:'2', label:'Painel de Sprint',          desc:'Gerencie tarefas e cronometro'    },
-  { key:'3', label:'Ficha do Desenvolvedor',    desc:'Nivel, XP, salario e historico'   },
+  { key:'3', label:'Ficha do Desenvolvedor',    desc:'Nivel, score, salario e historico'   },
   { key:'4', label:'Quadro de Projetos',        desc:'Missoes disponiveis e progresso'  },
   { key:'5', label:'Trilha de Estudos',         desc:'14 fases ate Senior III'          },
   { key:'6', label:'GitHub (simulado)',         desc:'Issues, PRs, Actions, Commits e README'  },

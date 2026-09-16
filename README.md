@@ -23,7 +23,7 @@ Um arquivo. Todas as telas. Navegue com ↑↓ e Enter.
 
 ### Resetar o progresso
 
-Quer voltar tudo ao estado inicial (nome, XP, sprint, mensagens e projetos marcados como entregues)?
+Quer voltar tudo ao estado inicial (nome, score, sprint, mensagens e projetos marcados como entregues)?
 
 ```bash
 npm run resetar
@@ -44,7 +44,7 @@ Se o simulador estiver rodando, feche-o antes para o reset ter efeito completo.
 │   │   ├── ansi.js        cores, caixas, truncamento de texto
 │   │   ├── app.js         estado global (APP), menu, feed corporativo
 │   │   ├── dados.js       paths, NPCs, load/save (sprint/progress/mensagens)
-│   │   ├── draw-utils.js  barra de XP, medidor, sparkline, timer da tarefa
+│   │   ├── draw-utils.js  barra de progresso (score/projetos), medidor, sparkline, timer da tarefa
 │   │   ├── gitflow.js     leitura da branch atual (nunca cria/muda nada)
 │   │   ├── lint.js        roda o ESLint (eslint.config.js) no "concluir"
 │   │   ├── screen.js      indireção pra render()/goTo() sem ciclo de require
@@ -100,8 +100,8 @@ projeto na mão.
 | `ver <nº>` | Mostra o status do projeto (o número aparece no board) |
 | `start <nº>` | Começa ou retoma o projeto — vira o "ativo" (o cronômetro de horas passa a seguir ele). Dá pra ter mais de um projeto "em andamento" ao mesmo tempo, mas só um com o cronômetro ligado |
 | `revisar <nº>` | Manda pro QA — ele roda lint + `npm test` de verdade na hora e aprova/reprova com o motivo real, em tempo real (minutos a dias) |
-| `concluir <nº>` | Só com o projeto aprovado — roda `npm test` de novo, marca como entregue e dá XP |
-| `commit <mensagem>` | **Salva o jogo em disco** (XP, sprint, projetos) — sem commit, nada do que mudou é persistido. `concluir` também salva sozinho |
+| `concluir <nº>` | Só com o projeto aprovado — roda `npm test` de novo, marca como entregue e dá score |
+| `commit <mensagem>` | **Salva o jogo em disco** (score, sprint, projetos) — sem commit, nada do que mudou é persistido. `concluir` também salva sozinho |
 | `pausar` / `retomar` | Pausa ou retoma o timer do projeto ativo |
 | Enter | Atualiza a tela e os timers |
 | Esc | Volta ao menu |
@@ -115,7 +115,7 @@ mão — tudo isso vem do README do próprio projeto.
   horas vinda do README (**mínimo de 1h**, crescendo com a complexidade do
   projeto — os primeiros do Estagiário começam em 1h, o integrador chega a
   4h). Estourou o tempo? O QA renegocia mais tempo sozinho, mas isso
-  registra um **aviso de desempenho** e tira XP (-5 na 1ª vez na sprint,
+  registra um **aviso de desempenho** e tira score (-5 na 1ª vez na sprint,
   -10 na 2ª, escalando).
 - **Prazo da sprint — do LOTE inteiro**, em dias **corridos** (conta mesmo
   com o app fechado — é sprint de verdade, não sessão de terminal), e
@@ -129,16 +129,16 @@ mão — tudo isso vem do README do próprio projeto.
 
   Estourou o prazo do lote inteiro sem entregar tudo? O QA consegue mais
   tempo com o PM (metade do prazo original, mínimo 3 dias), mas vira aviso
-  de desempenho + XP perdido, escalando a cada vez na mesma sprint.
+  de desempenho + score perdido, escalando a cada vez na mesma sprint.
 - **Prática diária** — passou um dia inteiro sem abrir o simulador? Isso
-  conta como falta de verdade: aviso de desempenho, XP perdido, e o
+  conta como falta de verdade: aviso de desempenho, score perdido, e o
   streak de dias seguidos (visível na Ficha do Desenvolvedor) reseta.
 
 Nenhum desses estouros trava o jogo — mas todos custam caro no seu
 histórico, igual aconteceria num trampo de verdade.
 
 O QA aprova ou reprova cada tarefa em revisão sozinho, depois de alguns
-segundos: aprovada vai pra CONCLUÍDO (+25 XP); reprovada volta pra
+segundos: aprovada vai pra CONCLUÍDO (+25 pts); reprovada volta pra
 DESENVOLVENDO pra ajustar e mandar de novo.
 
 ---
@@ -241,7 +241,7 @@ sugere (via mensagem do Lead) abrir uma `release/<nível>` a partir da sua
 uma release real, só que fechando na sua própria branch (já que a `main`
 compartilhada não é sua pra mexer).
 
-Dados de progresso (XP, sprint, mensagens) ficam em `.devtech/` e **não são commitados**.
+Dados de progresso (score, sprint, mensagens) ficam em `.devtech/` e **não são commitados**.
 O que vai para o git é apenas o código que você implementa nos projetos.
 
 **Commit é manual, de propósito.** O simulador nunca commita por você — é

@@ -100,7 +100,7 @@ function buildSprint(s) {
   let o = C.cls + C.hide;
   o += `╔${LINE}╗\n`;
   const naoSalvo = haAlteracoesNaoSalvas() ? '  ' + clr(C.yellow, '● não salvo') : '  ' + clr(C.gray, '✔ salvo');
-  o += row(` ${bold('DEVTECH SISTEMAS S.A.')}  ${' '.repeat(26)}Dev: ${bold(p.name)}  XP: ${clr(C.cyan,String(p.xp))}${naoSalvo}`) + '\n';
+  o += row(` ${bold('DEVTECH SISTEMAS S.A.')}  ${' '.repeat(26)}Dev: ${bold(p.name)}  Score: ${clr(C.cyan,String(p.score))}${naoSalvo}`) + '\n';
   o += row(` Sprint ${clr(C.gray,String(s.sprintNum||1))}${pausado ? '  '+clr(C.yellow,'[PAUSADO]') : ''}  ${prazoLoteTexto(s)}`) + '\n';
   o += row(` ${s.projetoAtual ? clr(C.gray,'ativo: '+s.projetoAtual) : clr(C.gray,'nenhum projeto ativo')}`) + '\n';
   o += row(` ${timerLine(s)}`) + '\n';
@@ -541,13 +541,13 @@ function sprintCommand(input, s) {
 
       proj.status = 'done'; proj.completedAt = new Date().toISOString();
       proj.tempoGastoMs = proj.tempoAtivoMs || 0;
-      // XP escala com o tamanho do projeto (numero de tarefas do README) —
+      // Score escala com o tamanho do projeto (numero de tarefas do README) —
       // um projeto maior vale mais do que um mini-projeto de 1 topico.
       const meta = metaDoProjeto(proj.nivel, proj.pj);
-      const xpGanho = Math.max(25, (meta.tarefas?.length || 1) * 25);
+      const scoreGanho = Math.max(25, (meta.tarefas?.length || 1) * 25);
       const p2 = loadProgress();
       let penMsg = '';
-      p2.xp += xpGanho;
+      p2.score += scoreGanho;
       if (proj.extensoesQA > 0) {
         p2.atrasadas = (p2.atrasadas || 0) + 1;
         penMsg = clr(C.yellow, ` (entregue com ${proj.extensoesQA} reestimativa(s) no caminho)`);
@@ -555,7 +555,7 @@ function sprintCommand(input, s) {
       }
       saveProgress(p2);
       fs.writeFileSync(marker, new Date().toISOString());
-      pushMessage(NPC.qa,   `Suite completa passou. Aprovado! +${xpGanho} XP`);
+      pushMessage(NPC.qa,   `Suite completa passou. Aprovado! +${scoreGanho} pts`);
       pushMessage(NPC.lead, `#${id} "${proj.titulo}" entregue! Otimo trabalho, ${p2.name}.`);
 
       // gitflow — so avisa (leitura), nao mexe em nada. O merge de verdade
@@ -589,9 +589,9 @@ function sprintCommand(input, s) {
 
       // entrega de projeto e um marco por si so (o .concluido ja foi pro
       // disco acima) — salva o resto do estado junto pra nao ficar
-      // inconsistente (projeto marcado como entregue mas XP so em memoria).
+      // inconsistente (projeto marcado como entregue mas score so em memoria).
       persistirJogo();
-      return clr(C.green,`★ ENTREGUE! +${xpGanho} XP`) + proxMsg + penMsg + clr(C.green,'  ✔ jogo salvo');
+      return clr(C.green,`★ ENTREGUE! +${scoreGanho} pts`) + proxMsg + penMsg + clr(C.green,'  ✔ jogo salvo');
     }
     case '': case undefined: return null;
     default: return `  Comando desconhecido: "${cmd}"`;
@@ -601,8 +601,8 @@ function sprintCommand(input, s) {
 // Quando o tempo de um projeto estoura, o dev nao reestima sozinho — o QA
 // negocia mais tempo com o PM. Mas isso nao e de graca: cada reestimativa
 // vira um aviso de desempenho registrado na hora (nao só na entrega), com
-// XP cada vez maior perdido se acontecer de novo. So mede o projeto ATIVO
-// (o unico com cronometro rodando).
+// pontuacao cada vez maior perdida se acontecer de novo. So mede o projeto
+// ATIVO (o unico com cronometro rodando).
 function checkOvertime() {
   const s = loadSprint();
   if (!s || !s.sessaoIniciadaEm || !s.projetoAtivoId) return;
@@ -628,7 +628,7 @@ function checkOvertime() {
 
     const penalidade = 5 * proj.extensoesQA; // -5, -10, -15... escalando por projeto
     const p = loadProgress();
-    p.xp     = Math.max(0, p.xp - penalidade);
+    p.score  = Math.max(0, p.score - penalidade);
     p.avisos = (p.avisos || 0) + 1;
     saveProgress(p);
 
@@ -637,7 +637,7 @@ function checkOvertime() {
       ? `Essa já é a ${proj.extensoesQA}ª reestimativa desse projeto. Precisamos conversar sobre planejamento.`
       : 'Um projeto estourou o tempo. Da próxima vez avisa antes de chegar no limite.');
     if (APP.screen === 'sprint')
-      APP.lastFb = clr(C.red, `⚠ #${proj.id} estourou — QA deu +${extensao}h  (aviso registrado, -${penalidade} XP)`);
+      APP.lastFb = clr(C.red, `⚠ #${proj.id} estourou — QA deu +${extensao}h  (aviso registrado, -${penalidade} pts)`);
 
     APP.ov80 = false; // reseta pra poder alertar de novo dentro do novo prazo
   }
@@ -646,8 +646,8 @@ function checkOvertime() {
 // Simulador vivo: o LOTE inteiro corre em dias corridos de verdade (a
 // partir de quando entrou no backlog), mesmo com o app fechado. Se o prazo
 // bater antes do lote inteiro entregue, o QA renegocia com o PM — mesmo
-// contador de avisos/XP que o estouro de horas, agora por sprint em vez de
-// por projeto.
+// contador de avisos/pontuacao que o estouro de horas, agora por sprint em
+// vez de por projeto.
 function checkPrazoSprint() {
   const s = loadSprint();
   if (!s || !s.loteAtribuidoEm) return;
@@ -666,14 +666,14 @@ function checkPrazoSprint() {
 
   const penalidade = 5 * s.loteExtensoesQA;
   const p = loadProgress();
-  p.xp     = Math.max(0, p.xp - penalidade);
+  p.score  = Math.max(0, p.score - penalidade);
   p.avisos = (p.avisos || 0) + 1;
   saveProgress(p);
 
   pushMessage(NPC.pm, `Os ${prazo} dias da Sprint ${s.sprintNum} bateram. Consegui +${extensaoDias} dias com o cliente, mas isso vira aviso.`);
   pushMessage(NPC.qa, 'Nao da pra esticar prazo pra sempre — precisamos fechar isso logo.');
   if (APP.screen === 'sprint')
-    APP.lastFb = clr(C.red, `⚠ Prazo da Sprint ${s.sprintNum} estourou — QA conseguiu +${extensaoDias}d  (aviso registrado, -${penalidade} XP)`);
+    APP.lastFb = clr(C.red, `⚠ Prazo da Sprint ${s.sprintNum} estourou — QA conseguiu +${extensaoDias}d  (aviso registrado, -${penalidade} pts)`);
 
   saveSprint(s);
 }

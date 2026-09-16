@@ -3,7 +3,7 @@
 const { C, INN, LINE, bold, cen, clr, dim, row } = require('../core/ansi');
 const { APP } = require('../core/app');
 const { LEVELS, contarProjetos, contarProjetosNivel, getLevel, loadMessages, loadProgress, saveProgress } = require('../core/dados');
-const { xpBar } = require('../core/draw-utils');
+const { progressBar } = require('../core/draw-utils');
 const { render } = require('../core/screen');
 const { wrapPrefixedColored } = require('../core/texto');
 
@@ -22,7 +22,7 @@ function buildDev() {
   o += row('') + '\n';
   o += row(`  ${clr(C.gray,'Desenvolvedor')}   ${bold(p.name)}`) + '\n';
   o += row(`  ${clr(C.gray,'Nível         ')}   ${bold(clr(C.yellow,lv.name))}`) + '\n';
-  o += row(`  ${clr(C.gray,'XP            ')}   ${clr(C.cyan,String(p.xp))} XP`) + '\n';
+  o += row(`  ${clr(C.gray,'Score         ')}   ${clr(C.cyan,String(p.score))} pts`) + '\n';
   o += row(`  ${clr(C.gray,'Salário       ')}   ${lv.salary}`) + '\n';
   o += row(`  ${clr(C.gray,'Projetos      ')}   ${clr(C.green,String(proj.concluidos))}/${proj.total} entregues`) + '\n';
   o += row(`  ${clr(C.gray,'Prática diária')}   ${clr(C.cyan,String(p.diasSeguidos||0))} dia(s) seguido(s)${p.diasFaltados>0?clr(C.gray,`  (${p.diasFaltados} perdido(s) ao todo)`):''}`) + '\n';
@@ -41,7 +41,7 @@ function buildDev() {
   o += `╠${LINE}╣\n`;
   if (next) {
     if (nivelProj.total > 0) {
-      o += row(`  ${xpBar(nivelProj.concluidos, { xpMin:0, xpMax: Math.max(nivelProj.total-1,0) }, 40)}`) + '\n';
+      o += row(`  ${progressBar(nivelProj.concluidos, { min:0, max: Math.max(nivelProj.total-1,0) }, 40)}`) + '\n';
       const faltam = nivelProj.total - nivelProj.concluidos;
       o += row(`  ${clr(C.gray,'→')} ${clr(C.yellow,next.name)} após entregar mais ${clr(C.cyan,String(faltam)+' projeto(s)')}`) + '\n';
     } else {

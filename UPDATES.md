@@ -1,5 +1,15 @@
 # Atualizações
 
+## 2026-09-16 (2)
+- 🔁 **XP renomeado para "score"**: já que a pontuação não decide mais promoção de
+  nível (ver entrada anterior), ela vira o que sempre devia ter sido — um placar
+  comparativo entre jogadores, estilo jogo retrô, não uma moeda de progressão.
+  Campo `progress.json` → `xp` virou `score` (saves antigos migram sozinhos ao
+  carregar); `LEVELS` perdeu de vez os campos de faixa de pontuação por nível; a
+  função de barra de progresso saiu de `xpBar` pra `progressBar` (genérica, usada
+  tanto pro score quanto pra contagem de projetos entregues). Telas passaram a
+  mostrar "Score: N pts" em vez de "XP: N".
+
 ## 2026-09-16
 - 🔁 **Promoção de nível deixa de ser por XP e passa a ser por trilha completa**:
   o jogador só sobe de senioridade depois de entregar (`.concluido`) **todos** os

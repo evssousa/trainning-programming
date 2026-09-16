@@ -199,7 +199,7 @@ process.on('SIGTERM', () => gracefulExit());
 // ─────────────────────────────────────────────────────────────────────────────
 
 process.stdout.write(C.hide);
-APP._xpPrev = loadProgress().xp;
+APP._scorePrev = loadProgress().score;
 APP._nivelPrevIdx = getLevel().idx;
 
 boot().then(() => {
@@ -211,7 +211,7 @@ boot().then(() => {
     const pl = acesso.dias === 1 ? 'dia' : 'dias';
     pushMessage(NPC.lead, `Sumiu ${acesso.dias} ${pl}. Isso conta como aviso de desempenho — não deixa a rotina cair.`);
     pushMessage(NPC.pm, 'O cliente fica de olho na constância da equipe.');
-    pushFeed(NPC.lead, `${acesso.dias} ${pl} sem aparecer. Aviso registrado (-${acesso.xp} XP).`, 'alerta');
+    pushFeed(NPC.lead, `${acesso.dias} ${pl} sem aparecer. Aviso registrado (-${acesso.score} pts).`, 'alerta');
   } else if (acesso?.tipo === 'streak' && acesso.dias > 1 && acesso.dias % 5 === 0) {
     pushMessage(NPC.lead, `${acesso.dias} dias seguidos de acesso! Ritmo sólido.`);
     pushFeed(NPC.lead, `${acesso.dias} dias seguidos de prática. Mandou bem.`, 'ok');
