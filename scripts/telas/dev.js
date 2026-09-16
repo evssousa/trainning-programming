@@ -2,15 +2,16 @@
 
 const { C, INN, LINE, bold, cen, clr, dim, row } = require('../core/ansi');
 const { APP } = require('../core/app');
-const { LEVELS, contarProjetos, getLevel, loadMessages, loadProgress, saveProgress } = require('../core/dados');
+const { LEVELS, contarProjetos, contarProjetosNivel, getLevel, loadMessages, loadProgress, saveProgress } = require('../core/dados');
 const { xpBar } = require('../core/draw-utils');
 const { render } = require('../core/screen');
 const { wrapPrefixedColored } = require('../core/texto');
 
 function buildDev() {
   const p     = loadProgress();
-  const { lv, idx } = getLevel(p.xp);
-  const next  = lv.xpMax !== null ? LEVELS[idx+1] : null;
+  const { lv, idx } = getLevel();
+  const next  = idx < LEVELS.length - 1 ? LEVELS[idx+1] : null;
+  const nivelProj = next ? contarProjetosNivel(lv.folder) : null;
   const proj  = contarProjetos();
   const msgs  = loadMessages().slice(-5);
 
@@ -38,11 +39,17 @@ function buildDev() {
     o += row(`  ${clr(C.gray,'Bloqueio:')} ${ultimoStandup.bloqueio ? clr(C.yellow,ultimoStandup.bloqueio) : clr(C.green,'nenhum')}`) + '\n';
   }
   o += `╠${LINE}╣\n`;
-  o += row(`  ${xpBar(p.xp, lv, 40)}`) + '\n';
-  if (next)
-    o += row(`  ${clr(C.gray,'→')} ${clr(C.yellow,next.name)} em ${clr(C.cyan,String(lv.xpMax+1-p.xp)+' XP')}`) + '\n';
-  else
+  if (next) {
+    if (nivelProj.total > 0) {
+      o += row(`  ${xpBar(nivelProj.concluidos, { xpMin:0, xpMax: Math.max(nivelProj.total-1,0) }, 40)}`) + '\n';
+      const faltam = nivelProj.total - nivelProj.concluidos;
+      o += row(`  ${clr(C.gray,'→')} ${clr(C.yellow,next.name)} após entregar mais ${clr(C.cyan,String(faltam)+' projeto(s)')}`) + '\n';
+    } else {
+      o += row(`  ${clr(C.gray,'→')} ${clr(C.yellow,next.name)} — ${clr(C.gray,'aguardando novos projetos no nível atual')}`) + '\n';
+    }
+  } else {
     o += row(clr(C.green,'  ★ Nível máximo atingido!')) + '\n';
+  }
   o += `╠${LINE}╣\n`;
   o += row(bold(' ÚLTIMAS MENSAGENS DA EQUIPE')) + '\n';
   o += `╠${LINE}╣\n`;

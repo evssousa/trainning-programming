@@ -2,7 +2,7 @@
 
 const { C, LINE, bold, cen, clr, dim, row } = require('../core/ansi');
 const { APP, MENU_ITEMS } = require('../core/app');
-const { LEVELS, contarProjetos, getLevel, horaAtual, loadProgress, loadSprint } = require('../core/dados');
+const { LEVELS, contarProjetos, contarProjetosNivel, getLevel, horaAtual, loadProgress, loadSprint } = require('../core/dados');
 const { xpBar } = require('../core/draw-utils');
 const { goTo, render } = require('../core/screen');
 
@@ -28,9 +28,10 @@ function badgesDoMenu(p) {
 
 function buildMenu() {
   const p    = loadProgress();
-  const { lv, idx } = getLevel(p.xp);
+  const { lv, idx } = getLevel();
   const proj = contarProjetos();
-  const next = lv.xpMax !== null ? LEVELS[idx+1] : null;
+  const next = idx < LEVELS.length - 1 ? LEVELS[idx+1] : null;
+  const nivelProj = next ? contarProjetosNivel(lv.folder) : null;
   const badge = badgesDoMenu(p);
   const badgeKey = ['empresa','sprint','dev','projetos','aulas','github'];
 
@@ -44,7 +45,7 @@ function buildMenu() {
   o += row(clr(C.cyan, '  ╚═════╝ ╚══════╝  ╚═══╝     ╚═╝   ╚══════╝ ╚═════╝╚═╝  ╚═╝')) + '\n';
   o += cen(clr(C.gray, 'S I S T E M A S   S . A .   —   Sistema de Treinamento')) + '\n';
   o += `╠${LINE}╣\n`;
-  o += row(` ${bold(p.name)} ${clr(C.gray,'│')} ${clr(C.yellow,lv.name)} ${clr(C.gray,'│')} XP: ${clr(C.cyan,String(p.xp))}/${lv.xpMax !== null ? lv.xpMax+1 : 'MAX'} ${clr(C.gray,'│')} ${proj.concluidos}/${proj.total} proj ${clr(C.gray,'│')} ${clr(C.cyan,horaAtual())}`) + '\n';
+  o += row(` ${bold(p.name)} ${clr(C.gray,'│')} ${clr(C.yellow,lv.name)} ${clr(C.gray,'│')} XP: ${clr(C.cyan,String(p.xp))} ${clr(C.gray,'│')} ${proj.concluidos}/${proj.total} proj ${clr(C.gray,'│')} ${clr(C.cyan,horaAtual())}`) + '\n';
   o += `╠${LINE}╣\n`;
   o += row('') + '\n';
 
@@ -60,8 +61,13 @@ function buildMenu() {
 
   o += row('') + '\n';
   if (next) {
-    const bar = xpBar(p.xp, lv, 20);
-    o += row(`  ${clr(C.gray,'Próximo:')} ${clr(C.yellow,next.name)}  ${bar}  ${clr(C.gray,String(lv.xpMax+1-p.xp)+' XP')}`) + '\n';
+    if (nivelProj.total > 0) {
+      const bar = xpBar(nivelProj.concluidos, { xpMin:0, xpMax: Math.max(nivelProj.total-1,0) }, 20);
+      const faltam = nivelProj.total - nivelProj.concluidos;
+      o += row(`  ${clr(C.gray,'Próximo:')} ${clr(C.yellow,next.name)}  ${bar}  ${clr(C.gray,`${faltam} projeto(s) até promover`)}`) + '\n';
+    } else {
+      o += row(`  ${clr(C.gray,'Próximo:')} ${clr(C.yellow,next.name)}  ${clr(C.gray,'aguardando novos projetos no nível atual')}`) + '\n';
+    }
   }
   if (p.avisos > 0) o += row(`  ${clr(C.yellow,'⚠')}  Avisos de desempenho: ${clr(C.yellow,String(p.avisos))}`) + '\n';
   o += `╠${LINE}╣\n`;

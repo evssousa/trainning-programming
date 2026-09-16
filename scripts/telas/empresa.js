@@ -116,11 +116,13 @@ function tickEmpresa() {
     pushFeed(NPC.lead, `+${p.xp - APP._xpPrev} XP ganho. Total: ${p.xp} XP.`, 'ok');
   APP._xpPrev = p.xp;
 
-  // Promocao de nivel — hora de "fechar a release": sugere subir uma
+  // Promocao de nivel — agora so acontece quando todos os projetos do
+  // nivel atual foram entregues (ver getLevel() em core/dados.js), nao mais
+  // por XP. Quando acontece, e hora de "fechar a release": sugere subir uma
   // release/* pra main e taguear (so aviso narrativo, nunca automatico).
-  const nivelIdx = getLevel(p.xp).idx;
+  const nivelIdx = getLevel().idx;
   if (APP._nivelPrevIdx !== undefined && nivelIdx > APP._nivelPrevIdx) {
-    const lv = getLevel(p.xp).lv;
+    const lv = getLevel().lv;
     pushFeed(NPC.lead, `Promovido pra ${lv.name}! Hora de fechar a release.`, 'ok');
     pushMessage(NPC.lead, `Parabéns, ${lv.name}! Sugestão: git checkout -b release/${lv.folder} a partir de develop, testa tudo, e daí sim merge em main + tag.`);
   }

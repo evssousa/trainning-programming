@@ -7,7 +7,7 @@
 // Lead — e o analogo de uma review de performance de verdade.
 
 const { C, INN, LINE, bold, cen, clr, dim, row } = require('../core/ansi');
-const { LEVELS, contarProjetos, getLevel, loadProgress } = require('../core/dados');
+const { LEVELS, contarProjetos, contarProjetosNivel, getLevel, loadProgress } = require('../core/dados');
 const { xpBar } = require('../core/draw-utils');
 const { goTo, render } = require('../core/screen');
 
@@ -42,9 +42,10 @@ function leituraDoLead(p) {
 
 function buildRevisao1a1() {
   const p = loadProgress();
-  const { lv, idx } = getLevel(p.xp);
+  const { lv, idx } = getLevel();
   const proj = contarProjetos();
-  const next = lv.xpMax !== null ? LEVELS[idx + 1] : null;
+  const next = idx < LEVELS.length - 1 ? LEVELS[idx + 1] : null;
+  const nivelProj = next ? contarProjetosNivel(lv.folder) : null;
 
   let o = C.cls + C.hide;
   o += `╔${LINE}╗\n`;
@@ -60,8 +61,13 @@ function buildRevisao1a1() {
   o += row(`  ${clr(C.gray,'Prática diária     ')}  ${clr(C.cyan,String(p.diasSeguidos||0))} dia(s) seguido(s)${p.diasFaltados>0 ? clr(C.gray,`  (${p.diasFaltados} perdido(s) ao todo)`) : ''}`) + '\n';
   o += row('') + '\n';
   o += `╠${LINE}╣\n`;
-  o += row(`  ${xpBar(p.xp, lv, 40)}`) + '\n';
-  if (next) o += row(`  ${clr(C.gray,'→')} ${clr(C.yellow,next.name)} em ${clr(C.cyan,String(lv.xpMax+1-p.xp)+' XP')}`) + '\n';
+  if (next && nivelProj.total > 0) {
+    o += row(`  ${xpBar(nivelProj.concluidos, { xpMin:0, xpMax: Math.max(nivelProj.total-1,0) }, 40)}`) + '\n';
+    const faltam = nivelProj.total - nivelProj.concluidos;
+    o += row(`  ${clr(C.gray,'→')} ${clr(C.yellow,next.name)} após entregar mais ${clr(C.cyan,String(faltam)+' projeto(s)')}`) + '\n';
+  } else if (next) {
+    o += row(`  ${clr(C.gray,'→')} ${clr(C.yellow,next.name)} — ${clr(C.gray,'aguardando novos projetos no nível atual')}`) + '\n';
+  }
   o += `╠${LINE}╣\n`;
   o += row(bold(' RAFAEL (TECH LEAD)')) + '\n';
   o += `╠${LINE}╣\n`;

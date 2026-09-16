@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { C, INN, LINE, bold, clr, dim, row, stripAnsi } = require('../core/ansi');
 const { APP } = require('../core/app');
-const { LEVELS, MSGS_AMBIENTE, NPC, PROJECTS_DIR, contarProjetos, getLevel, haAlteracoesNaoSalvas, loadMessages, loadProgress, loadSprint, persistirJogo, pushMessage, saveProgress, saveSprint, tempoAtivoTotal } = require('../core/dados');
+const { MSGS_AMBIENTE, NPC, PROJECTS_DIR, contarProjetos, getLevel, haAlteracoesNaoSalvas, loadMessages, loadProgress, loadSprint, persistirJogo, pushMessage, saveProgress, saveSprint, tempoAtivoTotal } = require('../core/dados');
 const { timerLine } = require('../core/draw-utils');
 const { branchEsperadaProjeto, gitBranchAtual } = require('../core/gitflow');
 const { rodarLint, rodarTestes } = require('../core/lint');
@@ -166,8 +166,7 @@ function hashCommitFalso() {
 // Acha o primeiro projeto ainda não entregue dentro da pasta do nível atual,
 // pulando os que ja estao em s.projetos (backlog, em andamento ou ja entregues).
 function proximoProjetoNivel(excluir) {
-  const p  = loadProgress();
-  const lv = getLevel(p.xp).lv;
+  const lv = getLevel().lv;
   const nivelDir = path.join(PROJECTS_DIR, lv.folder);
   if (!fs.existsSync(nivelDir)) return null;
   const projetos = fs.readdirSync(nivelDir)
@@ -196,21 +195,15 @@ function projetosDisponiveisNoNivel(nivelFolder, jaNoJogo) {
 }
 
 function distribuirNovoLote(s) {
-  const p  = loadProgress();
-  const { lv, idx } = getLevel(p.xp);
+  const { lv } = getLevel();
   const jaNoJogo = new Set((s.projetos||[]).map(pr => pr.rel));
 
-  // O XP pode passar da nota de corte do proximo nivel antes dele ter
-  // projeto de verdade pronto (so Estagiario tem os 30 completos por
-  // enquanto — os outros niveis sao so um README "aguardando novo
-  // cliente", ver docs/plan.md). Em vez de travar o jogador sem backlog,
-  // desce pelos niveis anteriores ate achar um que ainda tenha projeto —
-  // ele continua produtivo no nivel que EXISTE, nao no que o XP diz.
-  let nivelEscolhido = lv.folder, disponiveis = projetosDisponiveisNoNivel(lv.folder, jaNoJogo);
-  for (let i = idx; disponiveis.length === 0 && i >= 0; i--) {
-    nivelEscolhido = LEVELS[i].folder;
-    disponiveis = projetosDisponiveisNoNivel(nivelEscolhido, jaNoJogo);
-  }
+  // getLevel() so avanca de nivel depois que TODOS os projetos do nivel
+  // atual foram entregues — entao, se nao ha disponivel aqui, e porque o
+  // nivel ainda nao tem trilha cadastrada (README "aguardando novo
+  // cliente", ver docs/plan.md), nao porque o jogador passou por cima dele.
+  // Nesse caso nao ha lote novo pra soltar ate a trilha ganhar conteudo.
+  const disponiveis = projetosDisponiveisNoNivel(lv.folder, jaNoJogo);
   if (!disponiveis.length) return 0;
 
   const qtd = Math.min(disponiveis.length, 1 + Math.floor(Math.random()*3)); // 1 a 3

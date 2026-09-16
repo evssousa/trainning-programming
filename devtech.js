@@ -200,7 +200,7 @@ process.on('SIGTERM', () => gracefulExit());
 
 process.stdout.write(C.hide);
 APP._xpPrev = loadProgress().xp;
-APP._nivelPrevIdx = getLevel(APP._xpPrev).idx;
+APP._nivelPrevIdx = getLevel().idx;
 
 boot().then(() => {
   pushFeed(NPC.ops, `Sistema iniciado. Bem-vindo, ${loadProgress().name}.`, 'ok');

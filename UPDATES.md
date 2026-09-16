@@ -1,5 +1,15 @@
 # Atualizações
 
+## 2026-09-16
+- 🔁 **Promoção de nível deixa de ser por XP e passa a ser por trilha completa**:
+  o jogador só sobe de senioridade depois de entregar (`.concluido`) **todos** os
+  projetos do nível atual — mesmo que o XP já alcance a faixa do próximo nível, não
+  promove sem terminar a trilha inteira. Objetivo: mais confiança de verdade no
+  próximo nível, não só pontuação. Níveis sem projeto cadastrado ainda (todos além do
+  Estagiário, por ora) não promovem sozinhos — o jogador fica parado neles até
+  ganharem conteúdo. XP continua existindo (penalidades, ficha), só não decide mais
+  promoção. Ver `getLevel()`/`contarProjetosNivel()` em `scripts/core/dados.js`.
+
 ## 2026-09-15 (2)
 - 📖 **Roteiro (`AULAS.md`) ampliado** com disciplinas que ainda não apareciam
   explicitamente na trilha, pedidas pelo usuário — inseridas dentro das 14 fases já

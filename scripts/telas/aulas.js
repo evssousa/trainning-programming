@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { C, LINE, bold, cen, clr, dim, row } = require('../core/ansi');
 const { APP } = require('../core/app');
-const { AULAS_DIR, AULAS_FILE, getLevel, loadProgress } = require('../core/dados');
+const { AULAS_DIR, AULAS_FILE, getLevel } = require('../core/dados');
 const { render } = require('../core/screen');
 const { renderMarkdown } = require('../core/texto');
 
@@ -42,8 +42,7 @@ function loadAulas() {
   if (APP.aulaLines.length) return;
   if (!fs.existsSync(AULAS_FILE)) { APP.aulaLines = [clr(C.gray, 'AULAS.md não encontrado.')]; return; }
   const raw = fs.readFileSync(AULAS_FILE, 'utf8');
-  const p   = loadProgress();
-  const { lv } = getLevel(p.xp);
+  const { lv } = getLevel();
 
   const blocos = raw.split(/\n(?=## FASE\s)/);
   let linhaFaseAtual = null;

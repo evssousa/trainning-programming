@@ -226,21 +226,36 @@ Nenhum dos dois trava o jogo (Esc continua livre) — só registra aviso de dese
 
 ---
 
-## Progressão de níveis (XP)
+## Progressão de níveis
 
-| Nível | XP mínimo | Salário |
-|---|---|---|
-| Estagiário | 0 | R$ 800–R$ 1.500 |
-| Trainee | 150 | R$ 2.000–R$ 3.500 |
-| Junior I | 350 | R$ 3.000–R$ 4.500 |
-| Junior II | 600 | R$ 4.000–R$ 5.500 |
-| Junior III | 900 | R$ 5.000–R$ 7.000 |
-| Pleno I | 1.250 | R$ 6.500–R$ 9.000 |
-| Pleno II | 1.650 | R$ 8.500–R$ 11.000 |
-| Pleno III | 2.100 | R$ 10.000–R$ 14.000 |
-| Sênior I | 2.600 | R$ 13.000–R$ 17.000 |
-| Sênior II | 3.150 | R$ 16.000–R$ 22.000 |
-| Sênior III | 3.750 | R$ 20.000–R$ 30.000+ |
+A promoção **não é mais por XP acumulado** — é por ter entregue (`.concluido`)
+**todos** os projetos do nível atual. Isso vale mesmo que o XP do jogador já
+alcance a faixa do próximo nível: sem completar a trilha inteira, não promove.
+A ideia é dar mais confiança pro próximo nível — o jogador só sobe depois de
+praticar tudo que o nível atual tinha pra oferecer.
+
+Um nível sem nenhum projeto cadastrado ainda (a maioria, hoje — só
+"Estagiário" tem trilha completa) não conta como "completo": o jogador fica
+parado nele até a trilha ganhar conteúdo, em vez de pular direto pro topo.
+Ver `getLevel()`/`contarProjetosNivel()` em `scripts/core/dados.js`.
+
+O XP continua existindo (penalidades de atraso/falta, ficha do dev, etc.),
+mas `xpMin`/`xpMax` em `LEVELS` (`scripts/core/dados.js`) ficam só como
+referência histórica/faixa salarial — não gatilham mais promoção.
+
+| Nível | Salário |
+|---|---|
+| Estagiário | R$ 800–R$ 1.500 |
+| Trainee | R$ 2.000–R$ 3.500 |
+| Junior I | R$ 3.000–R$ 4.500 |
+| Junior II | R$ 4.000–R$ 5.500 |
+| Junior III | R$ 5.000–R$ 7.000 |
+| Pleno I | R$ 6.500–R$ 9.000 |
+| Pleno II | R$ 8.500–R$ 11.000 |
+| Pleno III | R$ 10.000–R$ 14.000 |
+| Sênior I | R$ 13.000–R$ 17.000 |
+| Sênior II | R$ 16.000–R$ 22.000 |
+| Sênior III | R$ 20.000–R$ 30.000+ |
 
 ---
 

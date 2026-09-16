@@ -89,10 +89,22 @@ const LEVELS = [
   { name: 'Sênior III', xpMin: 3750, xpMax: null, salary: 'R$ 20.000–R$ 30.000+',folder: 'senior-3',   fase: 14 },
 ];
 
-function getLevel(xp) {
-  for (let i = LEVELS.length - 1; i >= 0; i--)
-    if (xp >= LEVELS[i].xpMin) return { lv: LEVELS[i], idx: i };
-  return { lv: LEVELS[0], idx: 0 };
+// O nivel atual NAO vem mais do XP acumulado — vem de ter entregue (.concluido)
+// todos os projetos do nivel em que o jogador esta. XP continua existindo
+// (penalidades, ficha, etc.) mas parar de ser o gatilho de promocao e
+// proposital: entregar tudo antes de subir da mais confianca pro proximo
+// nivel do que so acumular pontos. xpMin/xpMax em LEVELS ficam so como
+// referencia historica/faixa salarial.
+// Um nivel sem nenhum projeto ainda cadastrado (total === 0 — a maioria,
+// hoje: so "estagiario" tem trilha completa) NAO conta como "completo":
+// o jogador fica parado nele ate a trilha ganhar conteudo, em vez de pular
+// direto pro ultimo nivel so porque nao ha nada pra fazer no meio do caminho.
+function getLevel() {
+  for (let i = 0; i < LEVELS.length; i++) {
+    const { concluidos, total } = contarProjetosNivel(LEVELS[i].folder);
+    if (!(total > 0 && concluidos >= total)) return { lv: LEVELS[i], idx: i };
+  }
+  return { lv: LEVELS[LEVELS.length - 1], idx: LEVELS.length - 1 };
 }
 
 const PROGRESS_DEFAULT = { name: 'Dev', xp: 0, avisos: 0, atrasadas: 0, ultimoAcessoEm: null, diasSeguidos: 0, diasFaltados: 0 };
@@ -227,6 +239,22 @@ function contarProjetos() {
   return { concluidos:c, total:t };
 }
 
+// Mesma contagem de contarProjetos(), mas so dentro da pasta de UM nivel —
+// e o que decide se aquele nivel especifico ja foi todo entregue (ver
+// getLevel() acima).
+function contarProjetosNivel(folder) {
+  const np = path.join(PROJECTS_DIR, folder);
+  if (!fs.existsSync(np)) return { concluidos:0, total:0 };
+  let c=0, t=0;
+  for (const pj of fs.readdirSync(np)) {
+    const pp = path.join(np, pj);
+    if (!fs.statSync(pp).isDirectory()) continue;
+    t++;
+    if (fs.existsSync(path.join(pp, '.concluido'))) c++;
+  }
+  return { concluidos:c, total:t };
+}
+
 function localDateStr(d) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
@@ -267,4 +295,4 @@ function checkAcessoDiario() {
   return { tipo: 'falta', dias: faltados, xp: penalidade };
 }
 
-module.exports = { ROOT, DATA_DIR, SPRINT_FILE, PROGRESS_FILE, MESSAGES_FILE, AULAS_FILE, AULAS_DIR, PROJECTS_DIR, NPC, MSGS_AMBIENTE, INCIDENTES, RESOLUCOES, LEVELS, getLevel, PROGRESS_DEFAULT, loadProgress, saveProgress, loadSprint, saveSprint, loadMessages, pushMessage, tempoAtivoTotal, fmtMs, horaAtual, dataAtual, contarProjetos, localDateStr, diasEntreDatas, checkAcessoDiario, persistirJogo, haAlteracoesNaoSalvas };
+module.exports = { ROOT, DATA_DIR, SPRINT_FILE, PROGRESS_FILE, MESSAGES_FILE, AULAS_FILE, AULAS_DIR, PROJECTS_DIR, NPC, MSGS_AMBIENTE, INCIDENTES, RESOLUCOES, LEVELS, getLevel, PROGRESS_DEFAULT, loadProgress, saveProgress, loadSprint, saveSprint, loadMessages, pushMessage, tempoAtivoTotal, fmtMs, horaAtual, dataAtual, contarProjetos, contarProjetosNivel, localDateStr, diasEntreDatas, checkAcessoDiario, persistirJogo, haAlteracoesNaoSalvas };
