@@ -31,7 +31,6 @@ function prsDoBacklog(s) {
     let estado, cor;
     if (pr.status === 'done')          { estado = 'MERGEADO';                    cor = C.magenta; }
     else if (pr.status === 'revisao')  { estado = 'ABERTO — em revisão';         cor = C.green;   }
-    else if (pr.status === 'aprovado') { estado = 'APROVADO — falta concluir';   cor = C.cyan;    }
     else                                { estado = 'MUDANÇAS SOLICITADAS';        cor = C.red;     }
     const num    = `#PR${pr.prNumero}`.padEnd(6);
     const titulo = (pr.titulo.length > 26 ? pr.titulo.slice(0,25)+'…' : pr.titulo).padEnd(26);

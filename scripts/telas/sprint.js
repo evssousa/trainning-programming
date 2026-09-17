@@ -50,11 +50,15 @@ function buildSprint(s) {
   const projetos = s.projetos || [];
   const backlog  = projetos.filter(pr => pr.status==='backlog');
   const doing    = projetos.filter(pr => pr.status==='doing');
-  const revisao  = projetos.filter(pr => pr.status==='revisao' || pr.status==='aprovado');
-  // so mostra os concluidos do lote atual — de uma sprint nova pra frente,
-  // os de lotes anteriores ja saem da tela (mas continuam no historico do
-  // GitHub simulado e contados no progresso via .concluido em disco).
-  const done     = projetos.filter(pr => pr.status==='done' && pr.loteSprintNum === s.sprintNum);
+  const revisao  = projetos.filter(pr => pr.status==='revisao');
+  // so mostra os concluidos do lote atual — comparando com quando o lote
+  // foi atribuido (sempre real e sem precisar migrar saves antigos: um
+  // projeto so pode ter sido concluido depois do lote em que ele entrou
+  // ter sido distribuido). Os de lotes anteriores somem da tela (mas
+  // continuam no historico do GitHub simulado e contados no progresso
+  // via .concluido em disco).
+  const done     = projetos.filter(pr => pr.status==='done'
+    && (!s.loteAtribuidoEm || !pr.completedAt || new Date(pr.completedAt) >= new Date(s.loteAtribuidoEm)));
   const rows     = Math.max(backlog.length, doing.length, revisao.length, done.length, 1);
   const pausado  = !s.sessaoIniciadaEm;
   const COL      = 18;   // 4 colunas de 18 + 3 separadores "│" + 1 indent = 76 = INN
@@ -85,7 +89,6 @@ function buildSprint(s) {
 
   function revisaoCell(pr) {
     if (!pr) return ' '.repeat(COL);
-    if (pr.status === 'aprovado') return comSufixo(pr, ' ✔ concluir');
     const min = Math.floor((Date.now()-new Date(pr.enviadoRevisaoEm||Date.now()).getTime())/60000);
     const tempo = min >= 1440 ? Math.floor(min/1440)+'d' : min >= 60 ? Math.floor(min/60)+'h' : min>0 ? min+'m' : '';
     return comSufixo(pr, ` ⏳${tempo}`);
@@ -145,7 +148,7 @@ function buildSprint(s) {
     o += `╠${LINE}╣\n`;
   }
   if (APP.lastFb) o += row(` ${APP.lastFb}`) + '\n', o += `╠${LINE}╣\n`;
-  o += row(dim('  ver/start/revisar <nº>   concluir <nº>   commit <mensagem>')) + '\n';
+  o += row(dim('  ver/start/revisar <nº>   commit <mensagem>')) + '\n';
   o += row(dim('  pausar   retomar')) + '\n';
   o += `╠${LINE}╣\n`;
   o += row(` ${clr(C.cyan,'>')} ${APP.inputBuf}${clr(C.gray,'█')}`) + '\n';
@@ -220,10 +223,6 @@ function distribuirNovoLote(s) {
       id: s.nextId++, nivel: prox.nivel, pj: prox.pj, rel: prox.rel,
       titulo: prox.pj.replace(/^\d+-/, '').replace(/-/g, ' '),
       sprintLabel: meta.sprint || `Sprint ${s.sprintNum}`,
-      // marca de qual sprint o projeto veio — o quadro usa isso pra sumir
-      // com os concluidos de lotes anteriores quando uma sprint nova
-      // comeca (o historico completo continua no GitHub simulado).
-      loteSprintNum: s.sprintNum,
       // piso de 1h — nenhum projeto (nem o mais curtinho) conta menos que
       // isso pro cronometro; o README pode pedir mais, nunca menos.
       estimativaHoras: Math.max(1, meta.estimativaHoras || 2),
@@ -252,7 +251,7 @@ function garantirLote(s) {
 // Bloqueado de verdade: nenhum projeto pra iniciar/continuar/concluir —
 // so resta esperar o QA responder alguma revisão. Bom momento pra estudar.
 function devEstaBloqueado(s) {
-  return !(s.projetos||[]).some(pr => ['backlog','doing','aprovado'].includes(pr.status));
+  return !(s.projetos||[]).some(pr => ['backlog','doing'].includes(pr.status));
 }
 
 // Prazo da sprint (dias corridos) agora e do LOTE inteiro — depende de
@@ -309,7 +308,7 @@ function metaDoProjeto(nivel, pj) {
 const RESP = {
   start:     [(id)=>[NPC.lead,`#${id} em andamento. Avisa se travar.`], (id)=>[NPC.dev,`Boa sorte no #${id}!`]],
   revisar:   [(id)=>[NPC.qa,`Recebi o #${id}, vou dar uma olhada. Pode levar um tempo.`], (id)=>[NPC.dev,`Mandei o #${id} pra revisão. Torcendo.`]],
-  aprovado:  [(id)=>[NPC.qa,`Testei o #${id}. Passou, aprovado! Pode concluir.`], (id)=>[NPC.lead,`#${id} aprovado no code review.`]],
+  aprovado:  [(id)=>[NPC.qa,`Testei o #${id}. Passou, aprovado! Já vou dar entrada na entrega.`], (id)=>[NPC.lead,`#${id} aprovado no code review.`]],
   pausar:    [()=>[NPC.dev,`Ate mais!`], ()=>[NPC.lead,`Não esquece de commitar antes de sair.`]],
   retomar:   [()=>[NPC.dev,`Bem-vindo de volta!`], ()=>[NPC.lead,`Bora terminar.`]],
 };
@@ -325,6 +324,88 @@ function delayRevisaoMs() {
   // Math.random()*Math.random() enviesa pro lado curto (a maioria das
   // revisoes resolve quase na hora, perto dos 3min).
   return min3 + Math.random() * Math.random() * (max10 - min3);
+}
+
+// Fecha um projeto ja aprovado pelo QA — chamado automaticamente assim que
+// a revisao resolve como aprovada (ver checkRevisoesQA), sem precisar de
+// nenhum comando manual do jogador.
+function finalizarProjeto(s, proj) {
+  const marker = path.join(PROJECTS_DIR, proj.rel, '.concluido');
+  if (fs.existsSync(marker)) { proj.status = 'done'; return { ok: true, texto: '  Projeto já entregue.' }; }
+
+  // ultima confirmacao real (lint + npm test), igual um pipeline de CI
+  // rodando antes do merge — a revisao ja aprovou, isso so fecha as contas
+  // (roda de novo porque o codigo pode ter mudado entre o envio e agora).
+  const lint = rodarLint(proj.rel);
+  const teste = rodarTestes(proj.rel);
+  const passou = teste.passou !== false && !lint.bloqueado;
+
+  s.ciRuns = s.ciRuns || [];
+  s.ciRuns.push({
+    numero: s.ciRuns.length + 1, quando: new Date().toISOString(), projeto: proj.rel,
+    sucesso: passou, testesOk: teste.passou !== false, lintErros: lint.erros, lintAvisos: lint.avisos,
+  });
+  if (s.ciRuns.length > 30) s.ciRuns = s.ciRuns.slice(-30);
+
+  if (!passou) {
+    proj.status = 'doing';
+    pushMessage(NPC.qa, `Entrega do #${proj.id} bloqueada — algo quebrou desde a revisão. Corrige e manda pra revisão de novo.`);
+    return { ok: false, texto: clr(C.red, `  [QA] #${proj.id} "${proj.titulo}" quebrou no build final (lint ou teste) — voltou pra andamento.`) };
+  }
+
+  proj.status = 'done'; proj.completedAt = new Date().toISOString();
+  proj.tempoGastoMs = proj.tempoAtivoMs || 0;
+  // Score escala com o tamanho do projeto (numero de tarefas do README) —
+  // um projeto maior vale mais do que um mini-projeto de 1 topico.
+  const meta = metaDoProjeto(proj.nivel, proj.pj);
+  const scoreGanho = Math.max(25, (meta.tarefas?.length || 1) * 25);
+  const p2 = loadProgress();
+  let penMsg = '';
+  p2.score += scoreGanho;
+  if (proj.extensoesQA > 0) {
+    p2.atrasadas = (p2.atrasadas || 0) + 1;
+    penMsg = clr(C.yellow, ` (entregue com ${proj.extensoesQA} reestimativa(s) no caminho)`);
+    pushMessage(NPC.pm, 'Projeto entregue, mas com reestimativas no meio do caminho. Vamos calibrar melhor a proxima.');
+  }
+  saveProgress(p2);
+  fs.writeFileSync(marker, new Date().toISOString());
+  pushMessage(NPC.qa,   `Suite completa passou. Aprovado! +${scoreGanho} pts`);
+  pushMessage(NPC.lead, `#${proj.id} "${proj.titulo}" entregue! Otimo trabalho, ${p2.name}.`);
+
+  // gitflow — so avisa (leitura), nao mexe em nada. O merge de verdade
+  // (feature -> develop) e sempre manual, feito pelo aluno.
+  const esperada = branchEsperadaProjeto(proj.rel);
+  const atual    = gitBranchAtual();
+  if (esperada && atual === esperada) {
+    pushMessage(NPC.lead, `Testes ok e entregue — agora faz o merge: git checkout develop && git merge ${esperada}`);
+  } else if (esperada && atual && atual !== 'main' && atual !== 'develop') {
+    pushMessage(NPC.lead, `Confere se commitou tudo em "${atual}" antes de mergear em develop.`);
+  }
+
+  // so busca lote novo quando o ultimo do lote atual foi entregue —
+  // se ainda tem outro projeto aberto no board, fica por isso mesmo.
+  let proxMsg = '';
+  const loteVazio = !s.projetos.some(pr => pr.status !== 'done');
+  if (loteVazio) {
+    if (garantirLote(s)) {
+      proxMsg = clr(C.gray, `  Sprint ${s.sprintNum} liberada com novo(s) projeto(s).`);
+    } else {
+      pushMessage(NPC.pm, 'Entrega registrada. Foi o último projeto disponível por enquanto — aguarde a próxima leva.');
+      proxMsg = clr(C.green, '  [QA] Nada mais liberado no momento. Aguarde novos projetos.');
+    }
+  }
+
+  saveSprint(s);
+
+  // a cada N projetos entregues, interrompe com um 1:1 de performance
+  // do Lead antes do menu.
+  if (precisaRevisao1a1(contarProjetos().concluidos)) goTo('revisao1a1');
+
+  // entrega de projeto e um marco por si so (o .concluido ja foi pro
+  // disco acima) — salva o resto do estado junto pra nao ficar
+  // inconsistente (projeto marcado como entregue mas score so em memoria).
+  persistirJogo();
+  return { ok: true, texto: clr(C.green,`★ ENTREGUE! #${proj.id} "${proj.titulo}" +${scoreGanho} pts`) + proxMsg + penMsg + clr(C.green,'  ✔ jogo salvo') };
 }
 
 function checkRevisoesQA() {
@@ -351,9 +432,11 @@ function checkRevisoesQA() {
     // Prioridade continua com o que o dev estiver fazendo agora — resolver
     // uma revisao NUNCA mexe no projeto ativo/cronometro de outro.
     if (proj.revisaoAprovada) {
-      proj.status = 'aprovado'; proj.aprovadoEm = new Date().toISOString();
+      proj.aprovadoEm = new Date().toISOString();
       const [n, t] = pick(RESP.aprovado, proj.id); pushMessage(n, t);
-      APP._lastRevisaoMsg = clr(C.green, `★ #${proj.id} "${proj.titulo}" aprovado pelo QA! Roda "concluir ${proj.id}".`);
+      // aprovado pelo QA vira entrega na hora — sem precisar de "concluir <nº>".
+      const res = finalizarProjeto(s, proj);
+      APP._lastRevisaoMsg = res.texto;
     } else {
       proj.status = 'doing';
       const motivo = proj.motivoReprovacao || 'Encontrei um problema durante a revisão.';
@@ -420,8 +503,7 @@ function sprintCommand(input, s) {
       if (!proj) return '  Use: ver <nº> (número do projeto no board)';
       const statusLabel = {
         backlog: clr(C.gray,'BACKLOG'), doing: clr(C.yellow,'EM ANDAMENTO'),
-        revisao: clr(C.magenta,'EM REVISÃO'), aprovado: clr(C.cyan,'APROVADO — falta concluir'),
-        done: clr(C.green,'CONCLUÍDO'),
+        revisao: clr(C.magenta,'EM REVISÃO'), done: clr(C.green,'CONCLUÍDO'),
       }[proj.status] || proj.status;
       return `  #${proj.id} [${statusLabel}]  ${proj.titulo}  ${clr(C.gray, proj.rel)}`;
     }
@@ -430,7 +512,6 @@ function sprintCommand(input, s) {
       if (!proj) return `  Projeto #${id} nao encontrado no seu backlog.`;
       if (proj.status==='done')     return `  #${id} ja concluido.`;
       if (proj.status==='revisao')  return `  #${id} ta em revisao com o QA. Aguarde.`;
-      if (proj.status==='aprovado') return `  #${id} ja foi aprovado pelo QA — falta concluir: concluir ${id}`;
       if (proj.status==='doing' && proj.id===s.projetoAtivoId)
         return `  #${id} ja e o projeto ativo agora.`;
 
@@ -456,7 +537,6 @@ function sprintCommand(input, s) {
       if (!proj) return `  Projeto #${id} nao encontrado.`;
       if (proj.status==='backlog')  return `  #${id} nem foi iniciado ainda — use: start ${id}`;
       if (proj.status==='revisao')  return `  #${id} ja esta em revisao. Aguarde o QA.`;
-      if (proj.status==='aprovado') return `  #${id} ja foi aprovado pelo QA — falta concluir: concluir ${id}`;
       if (proj.status==='done')     return `  #${id} ja concluido.`;
 
       // o QA roda o mesmo lint + npm test que "concluir" checa de novo no
@@ -517,88 +597,6 @@ function sprintCommand(input, s) {
       saveSprint(s);
       const [n,t] = pick(RESP.retomar); pushMessage(n,t);
       return `${clr(C.green,'▶')} "${proj.titulo}" retomado.`;
-    }
-    case 'concluir': {
-      const id = parseInt(rest), proj = s.projetos.find(pr=>pr.id===id);
-      if (!proj) return `  Uso: concluir <nº>  (o nº aparece em EM REVISÃO depois de aprovado)`;
-      if (proj.status==='done')     return '  Projeto ja entregue.';
-      if (proj.status!=='aprovado') return clr(C.yellow, `  [QA] #${id} ainda nao foi aprovado. Manda pra revisão primeiro: revisar ${id}`);
-
-      const marker = path.join(PROJECTS_DIR, proj.rel, '.concluido');
-      if (fs.existsSync(marker)) { proj.status = 'done'; return '  Projeto ja entregue.'; }
-
-      // ultima confirmacao real (lint + npm test), igual um pipeline de CI
-      // rodando antes do merge — a revisao ja aprovou, isso so fecha as contas.
-      const lint = rodarLint(proj.rel);
-      const teste = rodarTestes(proj.rel);
-      const passou = teste.passou !== false && !lint.bloqueado;
-
-      s.ciRuns = s.ciRuns || [];
-      s.ciRuns.push({
-        numero: s.ciRuns.length + 1, quando: new Date().toISOString(), projeto: proj.rel,
-        sucesso: passou, testesOk: teste.passou !== false, lintErros: lint.erros, lintAvisos: lint.avisos,
-      });
-      if (s.ciRuns.length > 30) s.ciRuns = s.ciRuns.slice(-30);
-
-      if (!passou) {
-        saveSprint(s);
-        pushMessage(NPC.qa, 'Entrega bloqueada — algo quebrou desde a revisão. Corrige antes de entregar.');
-        return clr(C.red, '  [QA] Bloqueado: algo nao passa mais (lint ou teste). Roda "revisar '+id+'" de novo depois de corrigir.');
-      }
-
-      proj.status = 'done'; proj.completedAt = new Date().toISOString();
-      proj.tempoGastoMs = proj.tempoAtivoMs || 0;
-      // Score escala com o tamanho do projeto (numero de tarefas do README) —
-      // um projeto maior vale mais do que um mini-projeto de 1 topico.
-      const meta = metaDoProjeto(proj.nivel, proj.pj);
-      const scoreGanho = Math.max(25, (meta.tarefas?.length || 1) * 25);
-      const p2 = loadProgress();
-      let penMsg = '';
-      p2.score += scoreGanho;
-      if (proj.extensoesQA > 0) {
-        p2.atrasadas = (p2.atrasadas || 0) + 1;
-        penMsg = clr(C.yellow, ` (entregue com ${proj.extensoesQA} reestimativa(s) no caminho)`);
-        pushMessage(NPC.pm, 'Projeto entregue, mas com reestimativas no meio do caminho. Vamos calibrar melhor a proxima.');
-      }
-      saveProgress(p2);
-      fs.writeFileSync(marker, new Date().toISOString());
-      pushMessage(NPC.qa,   `Suite completa passou. Aprovado! +${scoreGanho} pts`);
-      pushMessage(NPC.lead, `#${id} "${proj.titulo}" entregue! Otimo trabalho, ${p2.name}.`);
-
-      // gitflow — so avisa (leitura), nao mexe em nada. O merge de verdade
-      // (feature -> develop) e sempre manual, feito pelo aluno.
-      const esperada = branchEsperadaProjeto(proj.rel);
-      const atual    = gitBranchAtual();
-      if (esperada && atual === esperada) {
-        pushMessage(NPC.lead, `Testes ok e entregue — agora faz o merge: git checkout develop && git merge ${esperada}`);
-      } else if (esperada && atual && atual !== 'main' && atual !== 'develop') {
-        pushMessage(NPC.lead, `Confere se commitou tudo em "${atual}" antes de mergear em develop.`);
-      }
-
-      // so busca lote novo quando o ultimo do lote atual foi entregue —
-      // se ainda tem outro projeto aberto no board, fica por isso mesmo.
-      let proxMsg = '';
-      const loteVazio = !s.projetos.some(pr => pr.status !== 'done');
-      if (loteVazio) {
-        if (garantirLote(s)) {
-          proxMsg = clr(C.gray, `  Sprint ${s.sprintNum} liberada com novo(s) projeto(s).`);
-        } else {
-          pushMessage(NPC.pm, 'Entrega registrada. Foi o último projeto disponível por enquanto — aguarde a próxima leva.');
-          proxMsg = clr(C.green, '  [QA] Nada mais liberado no momento. Aguarde novos projetos.');
-        }
-      }
-
-      saveSprint(s);
-
-      // a cada N projetos entregues, interrompe com um 1:1 de performance
-      // do Lead antes do menu.
-      if (precisaRevisao1a1(contarProjetos().concluidos)) goTo('revisao1a1');
-
-      // entrega de projeto e um marco por si so (o .concluido ja foi pro
-      // disco acima) — salva o resto do estado junto pra nao ficar
-      // inconsistente (projeto marcado como entregue mas score so em memoria).
-      persistirJogo();
-      return clr(C.green,`★ ENTREGUE! +${scoreGanho} pts`) + proxMsg + penMsg + clr(C.green,'  ✔ jogo salvo');
     }
     case '': case undefined: return null;
     default: return `  Comando desconhecido: "${cmd}"`;

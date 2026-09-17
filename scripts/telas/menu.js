@@ -17,11 +17,8 @@ function badgesDoMenu(p) {
 
   const s = loadSprint();
   if (s) {
-    const projetos    = s.projetos || [];
-    const pendConcluir = projetos.filter(pr => pr.status==='aprovado').length;
-    const emRevisao    = projetos.filter(pr => pr.status==='revisao').length;
-    if (pendConcluir > 0) b.sprint = clr(C.green, `★ ${pendConcluir} aprovado(s) — falta concluir`);
-    if (emRevisao > 0)    b.github = clr(C.cyan,  `● ${emRevisao} PR em revisão com o QA`);
+    const emRevisao = (s.projetos || []).filter(pr => pr.status==='revisao').length;
+    if (emRevisao > 0) b.github = clr(C.cyan, `● ${emRevisao} PR em revisão com o QA`);
   }
   return b;
 }
