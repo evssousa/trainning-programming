@@ -173,6 +173,11 @@ function loadSprint() {
     if (!('loteAtribuidoEm'  in d)) d.loteAtribuidoEm  = null;
     if (!('lotePrazoDias'    in d)) d.lotePrazoDias    = null;
     if (!('loteExtensoesQA'  in d)) d.loteExtensoesQA  = 0;
+    // save de antes do quadro passar a lembrar de qual sprint cada projeto
+    // veio — sem isso, "concluir" nao aparecia na coluna CONCLUÍDO porque o
+    // filtro comparava undefined com o sprintNum atual. Assume que sao do
+    // lote corrente (e o unico lote que existia nesses saves).
+    for (const pr of d.projetos) if (!('loteSprintNum' in pr)) pr.loteSprintNum = d.sprintNum;
     _sprintCache = d;
     return d;
   } catch { return null; }
