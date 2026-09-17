@@ -591,7 +591,7 @@ function sprintCommand(input, s) {
       saveSprint(s);
 
       // a cada N projetos entregues, interrompe com um 1:1 de performance
-      // do Lead antes do menu — mesmo criterio de interstiço do standup.
+      // do Lead antes do menu.
       if (precisaRevisao1a1(contarProjetos().concluidos)) goTo('revisao1a1');
 
       // entrega de projeto e um marco por si so (o .concluido ja foi pro

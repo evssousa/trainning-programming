@@ -1,10 +1,10 @@
 'use strict';
 
 // Tela de "1:1 com o Tech Lead" — nao e um item do menu, e um interstício
-// disparado pelo sprint.js a cada N projetos entregues (ver CADENCIA_1A1),
-// igual o Daily Standup. Junta metricas que ja existem espalhadas (score,
-// avisos, atrasos, streak) num resumo so, com uma leitura qualitativa do
-// Lead — e o analogo de uma review de performance de verdade.
+// disparado pelo sprint.js a cada N projetos entregues (ver CADENCIA_1A1).
+// Junta metricas que ja existem espalhadas (score, avisos, atrasos,
+// streak) num resumo so, com uma leitura qualitativa do Lead — e o
+// analogo de uma review de performance de verdade.
 
 const { C, INN, LINE, bold, cen, clr, dim, row } = require('../core/ansi');
 const { LEVELS, contarProjetos, contarProjetosNivel, getLevel, loadProgress } = require('../core/dados');

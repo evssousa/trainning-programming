@@ -19,8 +19,6 @@ const APP = {
   readmeScroll: 0,
   githubTab: 'issues',     // issues | prs | actions
   githubScroll: 0,
-  standupPasso: 0,         // 0 ontem | 1 hoje | 2 bloqueio | 3 fim
-  standupRespostas: {},
 
   // empresa
   feed: [], feedTick: 0, incAtivo: false, incIdx: null,

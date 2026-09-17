@@ -3,7 +3,7 @@
 //
 // Ponto de entrada fino: so guarda o estado global (APP, via core/app),
 // o loop de render/teclado e o boot. Cada tela (empresa, sprint, dev,
-// projetos, aulas, github, standup) e seus helpers compartilhados
+// projetos, aulas, github) e seus helpers compartilhados
 // (ansi, dados, lint, gitflow, texto/markdown) vivem em scripts/core e
 // scripts/telas — veja lá antes de mexer em alguma tela especifica.
 'use strict';
@@ -23,8 +23,6 @@ const { buildDev,      handleDevKey }                     = require('./scripts/t
 const { buildProjetos, handleProjetosKey }                = require('./scripts/telas/projetos');
 const { buildAulas,    handleAulasKey }                   = require('./scripts/telas/aulas');
 const { buildGithub,   handleGithubKey }                  = require('./scripts/telas/github');
-const { buildStandup,  handleStandupKey,
-        precisaStandupHoje, salvarStandup }                = require('./scripts/telas/standup');
 const { buildRevisao1a1, handleRevisao1a1Key }              = require('./scripts/telas/revisao1a1');
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -41,7 +39,6 @@ function render() {
     case 'projetos': out = buildProjetos(); break;
     case 'aulas':    out = buildAulas();   break;
     case 'github':   out = buildGithub();  break;
-    case 'standup':  out = buildStandup(); break;
     case 'revisao1a1': out = buildRevisao1a1(); break;
   }
   process.stdout.write(out);
@@ -58,7 +55,6 @@ function goTo(screen) {
   if (screen === 'aulas')    { APP.aulaLines = []; APP.aulasScroll = 0; }
   if (screen === 'projetos') { APP.projetosScroll = 0; APP.projView = 'list'; }
   if (screen === 'github')   { APP.githubScroll = 0; }
-  if (screen === 'standup')  { APP.standupPasso = 0; APP.standupRespostas = {}; }
 }
 
 // as telas (scripts/telas/*.js) chamam render()/goTo() atraves do modulo
@@ -82,10 +78,6 @@ process.stdin.on('data', (key) => {
       APP.projView = 'list';     // volta pro quadro, não pro menu
       render(); return;
     }
-    if (APP.screen === 'standup') {
-      salvarStandup(APP.standupRespostas, true); // registra como pulado, nao trava o jogo
-      goTo('menu'); render(); return;
-    }
     goTo('menu'); render(); return; // Esc
   }
 
@@ -104,7 +96,6 @@ process.stdin.on('data', (key) => {
     case 'projetos': handleProjetosKey(key); break;
     case 'aulas':    handleAulasKey(key); break;
     case 'github':   handleGithubKey(key); break;
-    case 'standup':  handleStandupKey(key); break;
     case 'revisao1a1': handleRevisao1a1Key(key); break;
     case 'empresa':  render(); break;
   }
@@ -133,7 +124,7 @@ function boot() {
     const sp = SPIN[Math.floor(Date.now()/80)%SPIN.length];
     let o = C.cls;
     o += '\n\n';
-    o += `  ${C.cyan}${C.bold}`;
+    o += `${C.cyan}${C.bold}`;
     o += '  ██████╗ ███████╗██╗   ██╗████████╗███████╗ ██████╗██╗  ██╗\n';
     o += '  ██╔══██╗██╔════╝██║   ██║╚══██╔══╝██╔════╝██╔════╝██║  ██║\n';
     o += '  ██║  ██║█████╗  ██║   ██║   ██║   █████╗  ██║     ███████║\n';
@@ -220,10 +211,6 @@ boot().then(() => {
   // resolve na hora qualquer revisao que devia ter terminado enquanto o
   // app estava fechado (ou uma que ficou presa de uma versao anterior)
   checkRevisoesQA();
-
-  // primeira abertura do dia: pede o standup antes de qualquer outra tela
-  // (nao trava — Esc pula e fica registrado como pulado)
-  if (precisaStandupHoje(loadProgress())) goTo('standup');
 
   render();
 

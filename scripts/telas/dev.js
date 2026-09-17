@@ -29,15 +29,6 @@ function buildDev() {
   if (p.atrasadas > 0) o += row(`  ${clr(C.gray,'Atrasos       ')}   ${clr(C.yellow,String(p.atrasadas))} sprint(s) atrasada(s)`) + '\n';
   if (p.avisos > 0)    o += row(`  ${clr(C.yellow,'⚠ Avisos      ')}   ${clr(C.yellow,String(p.avisos))} aviso(s) de desempenho`) + '\n';
   o += row('') + '\n';
-  const ultimoStandup = (p.standups || []).slice(-1)[0];
-  if (ultimoStandup && !ultimoStandup.pulado) {
-    o += `╠${LINE}╣\n`;
-    o += row(bold(` ÚLTIMO STANDUP — ${ultimoStandup.data}`)) + '\n';
-    o += `╠${LINE}╣\n`;
-    o += row(`  ${clr(C.gray,'Ontem:')}    ${ultimoStandup.ontem || clr(C.gray,'(nada registrado)')}`) + '\n';
-    o += row(`  ${clr(C.gray,'Hoje:')}     ${ultimoStandup.hoje || clr(C.gray,'(nada registrado)')}`) + '\n';
-    o += row(`  ${clr(C.gray,'Bloqueio:')} ${ultimoStandup.bloqueio ? clr(C.yellow,ultimoStandup.bloqueio) : clr(C.green,'nenhum')}`) + '\n';
-  }
   o += `╠${LINE}╣\n`;
   if (next) {
     if (nivelProj.total > 0) {
