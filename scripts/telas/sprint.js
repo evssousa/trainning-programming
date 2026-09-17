@@ -51,7 +51,10 @@ function buildSprint(s) {
   const backlog  = projetos.filter(pr => pr.status==='backlog');
   const doing    = projetos.filter(pr => pr.status==='doing');
   const revisao  = projetos.filter(pr => pr.status==='revisao' || pr.status==='aprovado');
-  const done     = projetos.filter(pr => pr.status==='done');
+  // so mostra os concluidos do lote atual — de uma sprint nova pra frente,
+  // os de lotes anteriores ja saem da tela (mas continuam no historico do
+  // GitHub simulado e contados no progresso via .concluido em disco).
+  const done     = projetos.filter(pr => pr.status==='done' && pr.loteSprintNum === s.sprintNum);
   const rows     = Math.max(backlog.length, doing.length, revisao.length, done.length, 1);
   const pausado  = !s.sessaoIniciadaEm;
   const COL      = 18;   // 4 colunas de 18 + 3 separadores "│" + 1 indent = 76 = INN
@@ -217,6 +220,10 @@ function distribuirNovoLote(s) {
       id: s.nextId++, nivel: prox.nivel, pj: prox.pj, rel: prox.rel,
       titulo: prox.pj.replace(/^\d+-/, '').replace(/-/g, ' '),
       sprintLabel: meta.sprint || `Sprint ${s.sprintNum}`,
+      // marca de qual sprint o projeto veio — o quadro usa isso pra sumir
+      // com os concluidos de lotes anteriores quando uma sprint nova
+      // comeca (o historico completo continua no GitHub simulado).
+      loteSprintNum: s.sprintNum,
       // piso de 1h — nenhum projeto (nem o mais curtinho) conta menos que
       // isso pro cronometro; o README pode pedir mais, nunca menos.
       estimativaHoras: Math.max(1, meta.estimativaHoras || 2),
