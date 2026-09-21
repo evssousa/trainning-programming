@@ -1,5 +1,5 @@
 node_modules/
-.devtech/progress.json
-.devtech/sprint.json
-.devtech/messages.json
+# .devtech/progress.json
+# .devtech/sprint.json
+# .devtech/messages.json
 projects/**/.concluido

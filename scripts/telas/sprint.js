@@ -421,11 +421,20 @@ function checkRevisoesQA() {
     if (proj.status !== 'revisao') continue;
 
     // projeto preso de uma sessao anterior (fechada antes da hora, ou de
-    // uma versao mais antiga do simulador) — resolve agora mesmo.
+    // uma versao mais antiga do simulador) — resolve agora mesmo, rodando
+    // lint + testes de verdade (igual o comando "revisar"), nao sorteio.
     if (!proj.revisaoResolveEm) {
       proj.revisaoResolveEm = new Date().toISOString();
-      proj.revisaoAprovada  = Math.random() < 0.7;
-      if (!proj.revisaoAprovada) proj.motivoReprovacao = 'Encontrei um problema durante a revisão.';
+      const lintRev  = rodarLint(proj.rel);
+      const testeRev = rodarTestes(proj.rel);
+      proj.revisaoAprovada = !lintRev.bloqueado && testeRev.passou !== false;
+      if (!proj.revisaoAprovada) {
+        proj.motivoReprovacao = testeRev.passou === false
+          ? (testeRev.motivo || 'Os testes nao passaram.')
+          : lintRev.bloqueado
+            ? `Lint: ${lintRev.erros} erro(s) (ex.: ${lintRev.exemplo})`
+            : 'Encontrei um problema durante a revisão.';
+      }
     }
     if (Date.now() < new Date(proj.revisaoResolveEm).getTime()) continue;
 
