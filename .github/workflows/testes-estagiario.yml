@@ -15,8 +15,8 @@ jobs:
       run:
         working-directory: projects/estagiario/01-mensagens-onboarding
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -29,8 +29,8 @@ jobs:
       run:
         working-directory: projects/estagiario/02-guia-preparo-pedido
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -43,8 +43,8 @@ jobs:
       run:
         working-directory: projects/estagiario/03-recibo-de-venda
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -57,8 +57,8 @@ jobs:
       run:
         working-directory: projects/estagiario/04-dados-cadastrais
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -71,8 +71,8 @@ jobs:
       run:
         working-directory: projects/estagiario/05-calculadora-interna
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -85,8 +85,8 @@ jobs:
       run:
         working-directory: projects/estagiario/06-conversor-tipos
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -99,8 +99,8 @@ jobs:
       run:
         working-directory: projects/estagiario/07-classificador-idade
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -113,8 +113,8 @@ jobs:
       run:
         working-directory: projects/estagiario/08-validador-sensor-estacionamento
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -127,8 +127,8 @@ jobs:
       run:
         working-directory: projects/estagiario/09-sistema-cardapio-dinamico
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -141,8 +141,8 @@ jobs:
       run:
         working-directory: projects/estagiario/10-gerador-crachas-evento
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -155,8 +155,8 @@ jobs:
       run:
         working-directory: projects/estagiario/11-gerador-tabela-precos
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -169,8 +169,8 @@ jobs:
       run:
         working-directory: projects/estagiario/12-monitor-eventos-sistema
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -183,8 +183,8 @@ jobs:
       run:
         working-directory: projects/estagiario/13-troco-caixa-automatico
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -197,8 +197,8 @@ jobs:
       run:
         working-directory: projects/estagiario/14-gerador-relatorio-visual
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -211,8 +211,8 @@ jobs:
       run:
         working-directory: projects/estagiario/15-modulo-utilitarios-financeiros
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -225,8 +225,8 @@ jobs:
       run:
         working-directory: projects/estagiario/16-sistema-contadores-independentes
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -239,8 +239,8 @@ jobs:
       run:
         working-directory: projects/estagiario/17-calculadora-financeira
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -253,8 +253,8 @@ jobs:
       run:
         working-directory: projects/estagiario/18-sistema-lista-compras-mercado
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -267,8 +267,8 @@ jobs:
       run:
         working-directory: projects/estagiario/19-relatorio-estatisticas-vendas
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -281,8 +281,8 @@ jobs:
       run:
         working-directory: projects/estagiario/20-processador-pedidos
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -295,8 +295,8 @@ jobs:
       run:
         working-directory: projects/estagiario/21-catalogo-produtos-loja
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -309,8 +309,8 @@ jobs:
       run:
         working-directory: projects/estagiario/22-avaliacao-funcionarios
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -323,8 +323,8 @@ jobs:
       run:
         working-directory: projects/estagiario/23-cadastro-clientes-imutavel
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -337,8 +337,8 @@ jobs:
       run:
         working-directory: projects/estagiario/24-motor-calculo-combinatorio
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -351,8 +351,8 @@ jobs:
       run:
         working-directory: projects/estagiario/25-consolidador-recursivo-pedidos
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -365,8 +365,8 @@ jobs:
       run:
         working-directory: projects/estagiario/26-simulador-crescimento-populacional
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -379,8 +379,8 @@ jobs:
       run:
         working-directory: projects/estagiario/27-ordenador-fila-atendimento
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -393,8 +393,8 @@ jobs:
       run:
         working-directory: projects/estagiario/28-otimizador-ordenacao-estoque
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -407,8 +407,8 @@ jobs:
       run:
         working-directory: projects/estagiario/29-ranking-personalizavel-funcionarios
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -421,8 +421,8 @@ jobs:
       run:
         working-directory: projects/estagiario/30-busca-linear-estoque
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -435,8 +435,8 @@ jobs:
       run:
         working-directory: projects/estagiario/31-motor-busca-rapida-catalogo
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -449,8 +449,8 @@ jobs:
       run:
         working-directory: projects/estagiario/32-integrador-fase1
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
@@ -463,8 +463,8 @@ jobs:
       run:
         working-directory: projects/estagiario/33-refatoracao-modulo-descontos
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
       - run: npm install
