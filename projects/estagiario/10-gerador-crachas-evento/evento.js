@@ -2,7 +2,7 @@ function numerosDosCrachas(quantidade) {
     let arr = []
 
     if (quantidade > 0 && quantidade <= 4) {
-        for (let i = 1; i < quantidade; i++) {
+        for (let i = 1; i < quantidade + 1; i++) {
             arr.push(i)
         }
         
