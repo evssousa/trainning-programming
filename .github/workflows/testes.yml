@@ -14,45 +14,35 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  detectar-projetos:
-    name: Detectar projetos com testes
+  detectar-niveis:
+    name: Detectar níveis com projetos
     runs-on: ubuntu-latest
     outputs:
-      projetos: ${{ steps.listar.outputs.projetos }}
+      niveis: ${{ steps.listar.outputs.niveis }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Listar projetos com package.json
+      - name: Listar níveis com package.json
         id: listar
         run: |
-          projetos=$(find projects -mindepth 3 -maxdepth 3 -name package.json -exec dirname {} \; \
-            | sort | jq -R -s -c '
-              split("\n") | map(select(length > 0)) | map({
-                caminho: .,
-                nivel: (split("/")[1]),
-                slug: (split("/")[2])
-              })
-            ')
-          echo "projetos=$projetos" >> "$GITHUB_OUTPUT"
+          niveis=$(find projects -mindepth 3 -maxdepth 3 -name package.json -exec dirname {} \; \
+            | cut -d/ -f2 | sort -u | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "niveis=$niveis" >> "$GITHUB_OUTPUT"
 
           {
-            echo "### Projetos detectados"
-            echo "<details><summary>$(echo "$projetos" | jq 'length') projeto(s) — clique pra ver a lista</summary>"
-            echo ""
-            echo "$projetos" | jq -r 'group_by(.nivel)[] | "**\(.[0].nivel)** (\(length)): " + (map(.slug) | join(", "))'
-            echo ""
-            echo "</details>"
+            echo "### Níveis detectados"
+            echo "$niveis" | jq -r '.[] | "- `\(.)`"'
           } >> "$GITHUB_STEP_SUMMARY"
 
-  testar-projeto:
-    name: "Testes: ${{ matrix.projeto.nivel }}/${{ matrix.projeto.slug }}"
-    needs: detectar-projetos
-    if: needs.detectar-projetos.outputs.projetos != '[]'
+  testar-nivel:
+    name: "Testes: ${{ matrix.nivel }}"
+    needs: detectar-niveis
+    if: needs.detectar-niveis.outputs.niveis != '[]'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        projeto: ${{ fromJson(needs.detectar-projetos.outputs.projetos) }}
+        nivel: ${{ fromJson(needs.detectar-niveis.outputs.niveis) }}
     steps:
       - uses: actions/checkout@v4
 
@@ -60,62 +50,85 @@ jobs:
         with:
           node-version: 20
 
-      - name: Instalar dependências e rodar testes
-        id: testes
-        working-directory: ${{ matrix.projeto.caminho }}
+      - name: Rodar todos os projetos do nível
         run: |
-          set +e
-          { npm install && npm test -- --colors=false; } > "$RUNNER_TEMP/saida.log" 2>&1
-          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
-          set -e
-          cat "$RUNNER_TEMP/saida.log"
-
-      - name: Registrar resultado do projeto
-        if: always()
-        run: |
-          NIVEL="${{ matrix.projeto.nivel }}"
-          SLUG="${{ matrix.projeto.slug }}"
-          LOG="$RUNNER_TEMP/saida.log"
-          LINHA_TESTES=$(grep -E "^Tests:" "$LOG" | sed 's/^Tests:\s*//' || true)
-          [ -n "$LINHA_TESTES" ] || LINHA_TESTES="sem resumo do Jest (falhou antes de rodar os testes — ver log do job)"
-
-          if [ "${{ steps.testes.outputs.exit_code }}" = "0" ]; then
-            STATUS="passou"; ICONE="✅"
-          else
-            STATUS="falhou"; ICONE="❌"
-          fi
-
-          mkdir -p "$RUNNER_TEMP/resultado"
-          jq -n --arg nivel "$NIVEL" --arg slug "$SLUG" --arg status "$STATUS" --arg resumo "$LINHA_TESTES" \
-            '{nivel: $nivel, slug: $slug, status: $status, resumo: $resumo}' \
-            > "$RUNNER_TEMP/resultado/${NIVEL}_${SLUG}.json"
+          NIVEL="${{ matrix.nivel }}"
+          total=0
+          passou=0
+          falhou_algum=0
 
           {
-            echo "### $ICONE \`$NIVEL/$SLUG\`"
+            echo "## Resultado — $NIVEL"
             echo ""
-            echo "$LINHA_TESTES"
+            echo "| | Projeto | Testes |"
+            echo "|---|---|---|"
           } >> "$GITHUB_STEP_SUMMARY"
+
+          while IFS= read -r dir; do
+            total=$((total + 1))
+            slug=$(basename "$dir")
+
+            set +e
+            ( cd "$dir" && npm install && npm test -- --colors=false ) > "$RUNNER_TEMP/saida.log" 2>&1
+            exit_code=$?
+            set -e
+
+            linha=$(grep -E "^Tests:" "$RUNNER_TEMP/saida.log" | sed 's/^Tests:\s*//' || true)
+            [ -n "$linha" ] || linha="sem resumo do Jest (falhou antes de rodar os testes)"
+
+            if [ "$exit_code" -eq 0 ]; then
+              icone="✅"
+              passou=$((passou + 1))
+            else
+              icone="❌"
+              falhou_algum=1
+              echo "::error::Falhou: $NIVEL/$slug"
+            fi
+
+            echo "| $icone | \`$slug\` | $linha |" >> "$GITHUB_STEP_SUMMARY"
+
+            if [ "$exit_code" -ne 0 ]; then
+              {
+                echo ""
+                echo "<details><summary>Log de <code>$slug</code> (falhou) — clique pra ver</summary>"
+                echo ""
+                echo '```'
+                cat "$RUNNER_TEMP/saida.log"
+                echo '```'
+                echo "</details>"
+                echo ""
+              } >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done < <(find "projects/$NIVEL" -mindepth 2 -maxdepth 2 -name package.json -exec dirname {} \; | sort)
+
+          {
+            echo ""
+            echo "**$passou de $total projetos passaram.**"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          mkdir -p "$RUNNER_TEMP/resultado"
+          jq -n --arg nivel "$NIVEL" --argjson total "$total" --argjson passou "$passou" \
+            '{nivel: $nivel, total: $total, passou: $passou}' \
+            > "$RUNNER_TEMP/resultado/$NIVEL.json"
+
+          exit $falhou_algum
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: resultado-${{ strategy.job-index }}
+          name: nivel-${{ matrix.nivel }}
           path: ${{ runner.temp }}/resultado/*.json
           retention-days: 7
 
-      - name: Falhar o job se os testes falharam
-        if: always()
-        run: exit ${{ steps.testes.outputs.exit_code }}
-
   resumo:
     name: Resumo geral
-    needs: testar-projeto
+    needs: testar-nivel
     if: always()
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
         with:
-          pattern: resultado-*
+          pattern: nivel-*
           path: resultados
           merge-multiple: true
 
@@ -134,14 +147,14 @@ jobs:
           total=0
           passou=0
           for f in "${arquivos[@]}"; do
-            total=$((total + 1))
-            if [ "$(jq -r '.status' "$f")" = "passou" ]; then
-              passou=$((passou + 1))
-            fi
+            t=$(jq -r '.total' "$f")
+            p=$(jq -r '.passou' "$f")
+            total=$((total + t))
+            passou=$((passou + p))
           done
 
           {
-            echo "## Resultado dos testes, por projeto"
+            echo "## Resultado dos testes, por nível"
             echo ""
             if [ "$passou" -eq "$total" ]; then
               echo "### ✅ $passou de $total projetos passaram"
@@ -149,48 +162,32 @@ jobs:
               echo "### ⚠️ $passou de $total projetos passaram"
             fi
             echo ""
+            echo "| Nível | Projetos |"
+            echo "|---|---|"
           } >> "$GITHUB_STEP_SUMMARY"
 
-          niveis=$(for f in "${arquivos[@]}"; do jq -r '.nivel' "$f"; done | sort -u)
-
-          for nivel in $niveis; do
-            nt=0
-            np=0
-            linhas=""
-            for f in "${arquivos[@]}"; do
-              [ "$(jq -r '.nivel' "$f")" = "$nivel" ] || continue
-              slug=$(jq -r '.slug' "$f")
-              status=$(jq -r '.status' "$f")
-              resumo=$(jq -r '.resumo' "$f")
-              nt=$((nt + 1))
-              if [ "$status" = "passou" ]; then
-                icone="✅"; np=$((np + 1))
-              else
-                icone="❌"
-              fi
-              linhas="${linhas}| $icone | \`$slug\` | $resumo |"$'\n'
-            done
-
-            {
-              echo "<details open><summary><strong>$nivel</strong> — $np de $nt passaram</summary>"
-              echo ""
-              echo "| | Projeto | Testes |"
-              echo "|---|---|---|"
-              printf '%s' "$linhas"
-              echo ""
-              echo "</details>"
-              echo ""
-            } >> "$GITHUB_STEP_SUMMARY"
+          for f in "${arquivos[@]}"; do
+            nivel=$(jq -r '.nivel' "$f")
+            t=$(jq -r '.total' "$f")
+            p=$(jq -r '.passou' "$f")
+            if [ "$p" -eq "$t" ]; then icone="✅"; else icone="⚠️"; fi
+            echo "| $icone \`$nivel\` | $p de $t |" >> "$GITHUB_STEP_SUMMARY"
           done
 
-      - name: Falhar se algum projeto não passou
+          {
+            echo ""
+            echo "_Clique em \"Testes: <nível>\" na lista de jobs pra ver o resultado de cada projeto._"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Falhar se algum nível não passou 100%
         run: |
           shopt -s nullglob
           falhou=0
           for f in resultados/*.json; do
-            status=$(jq -r '.status' "$f")
-            if [ "$status" != "passou" ]; then
-              echo "::error::Falhou: $(jq -r '.nivel' "$f")/$(jq -r '.slug' "$f")"
+            t=$(jq -r '.total' "$f")
+            p=$(jq -r '.passou' "$f")
+            if [ "$p" != "$t" ]; then
+              echo "::error::Nível incompleto: $(jq -r '.nivel' "$f") ($p/$t)"
               falhou=1
             fi
           done
