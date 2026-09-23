@@ -1,6 +1,8 @@
 # DevTech Sistemas S.A.
 ### Simulador de Carreira — Engenheiro de Software Fullstack JavaScript
 
+[![Testes dos projetos](https://github.com/evssousa/trainning-programming/actions/workflows/testes.yml/badge.svg)](https://github.com/evssousa/trainning-programming/actions/workflows/testes.yml)
+
 ---
 
 Você acabou de ser contratado como **Estagiário** na DevTech Sistemas S.A.
@@ -178,10 +180,12 @@ de cada projeto automaticamente a cada `push`:
    recente — o workflow `.github/workflows/testes.yml` roda `npm install` +
    `npm test` de cada projeto que tem `package.json`, um por um, e no resumo da
    execução (a página que abre de cara, sem precisar entrar em cada job) tem
-   uma tabela com ✅/❌ de todos os projetos e o resultado do Jest de cada um —
-   dá pra ver de relance quais passaram sem abrir job por job. Clicar num job
-   específico (`Testes: projects/estagiario/NN-nome`) mostra o log completo,
-   igual sairia no terminal.
+   uma tabela **agrupada por nível** (Estagiário, Trainee...) com ✅/❌ e o
+   resultado do Jest de cada projeto — dá pra ver de relance quantos passaram,
+   no total e por nível, sem abrir job por job. Clicar num job específico
+   (`Testes: estagiario/NN-nome`) mostra o log completo, igual sairia no
+   terminal. O badge no topo deste README também mostra o resultado da
+   última execução.
 
 Isso não substitui o simulador (que continua sendo a forma principal de
 jogar), é só uma alternativa pra quem está travado num ambiente sem terminal.
