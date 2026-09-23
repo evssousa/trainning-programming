@@ -178,14 +178,13 @@ de cada projeto automaticamente a cada `push`:
    Control** para fazer commit e push (sem precisar de terminal).
 3. Abra a aba **Actions** do repositório no navegador e clique na execução mais
    recente — o workflow `.github/workflows/testes.yml` roda `npm install` +
-   `npm test` de cada projeto que tem `package.json`, um por um, e no resumo da
-   execução (a página que abre de cara, sem precisar entrar em cada job) tem
-   uma tabela **agrupada por nível** (Estagiário, Trainee...) com ✅/❌ e o
-   resultado do Jest de cada projeto — dá pra ver de relance quantos passaram,
-   no total e por nível, sem abrir job por job. Clicar num job específico
-   (`Testes: estagiario/NN-nome`) mostra o log completo, igual sairia no
-   terminal. O badge no topo deste README também mostra o resultado da
-   última execução.
+   `npm test` de cada projeto. Tem **um job por nível** (`Testes: estagiario`,
+   `Testes: trainee`...), não um por projeto — clique no nível que quer
+   conferir e o resumo daquele job já lista ✅/❌ e o resultado do Jest de
+   cada projeto dele (com o log completo pra quem falhou). O resumo da
+   execução (a página que abre de cara) mostra só o total por nível — pra
+   ver projeto por projeto é só entrar no job do nível. O badge no topo
+   deste README também mostra o resultado da última execução.
 
 Isso não substitui o simulador (que continua sendo a forma principal de
 jogar), é só uma alternativa pra quem está travado num ambiente sem terminal.
