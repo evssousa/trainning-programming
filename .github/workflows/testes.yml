@@ -23,7 +23,7 @@ jobs:
       - name: Listar projetos com package.json
         id: listar
         run: |
-          projetos=$(find projects -mindepth 2 -maxdepth 2 -name package.json -exec dirname {} \; \
+          projetos=$(find projects -mindepth 3 -maxdepth 3 -name package.json -exec dirname {} \; \
             | sort | jq -R -s -c 'split("\n") | map(select(length > 0))')
           echo "projetos=$projetos" >> "$GITHUB_OUTPUT"
           echo "### Projetos detectados" >> "$GITHUB_STEP_SUMMARY"
