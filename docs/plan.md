@@ -238,7 +238,16 @@ Quando o usuário pedir uma fase nova, repetir exatamente este processo:
    lote de 3 ou qualquer lote com o integrador (`prazoLotePara()` em
    `scripts/telas/sprint.js`). Não precisa de nada especial no README pra isso — é
    calculado sozinho a partir de quantos projetos caem juntos no lote.
-10. Ao terminar o nível, atualizar `README.md` (se algo do fluxo mudou), `UPDATES.md`
+10. **Criar `.github/workflows/testes-<nivel>.yml`** — copiar
+    `.github/workflows/testes-estagiario.yml` e trocar `estagiario` pelo folder
+    do nível novo em todo lugar (`name:`, `working-directory:` de cada job, e o
+    id de cada job). É intencionalmente burro: um job estático por projeto,
+    sem detecção dinâmica nem matrix — o usuário pediu esse formato de
+    propósito, porque cada projeto vira uma entrada separada e clicável na
+    lista de jobs do Actions, sem nenhuma camada por cima pra entender. Gerar
+    os blocos de job com um script (loop sobre as pastas do nível) em vez de
+    copiar e colar à mão evita erro de digitação nos 20-30+ jobs.
+11. Ao terminar o nível, atualizar `README.md` (se algo do fluxo mudou), `UPDATES.md`
    (uma linha curta) e remover o placeholder "aguardando novo cliente" daquele nível.
 
 ---
