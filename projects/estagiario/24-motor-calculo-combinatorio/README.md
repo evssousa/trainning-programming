@@ -17,7 +17,6 @@ possibilidades de sorteio — o exemplo clássico pra aprender recursão.
 **Sprint:** Estagiário — Motor Combinatório  
 **Estimativa:** 2h  
 **Prioridade:** Baixa  
-**Tópico da trilha:** Fase 1 — Fundamentos › Recursão e casos base (1/3)
 
 ---
 
@@ -61,10 +60,7 @@ npm test
 
 ### Dicas (tente sozinho antes de usar)
 
-> 📘 Ainda sem noção de por onde começar? Revise o **Tópico 8 — Recursão e casos base**
-> em [`08-recursao.md`](../../../aulas/fase-01-fundamentos-de-programacao/08-recursao.md) — tem explicação, exemplo e um
-> exercício pra treinar antes de tentar aqui. Também dá pra ler dentro
-> do simulador, tecla `[5]` (Trilha de Estudos).
+> 📘 Ainda sem noção de por onde começar? Pesquise **Recursão e casos base** na [documentação da MDN](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide) ou no [W3Schools](https://www.w3schools.com/js/) antes de tentar aqui.
 
 **`fatorialRecursivo`** — Toda função recursiva tem duas partes: o **caso base** (quando
 parar, sem chamar a função de novo) e o **caso recursivo** (onde ela chama ela mesma com

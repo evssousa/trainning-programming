@@ -18,7 +18,6 @@ trocando quando estão fora de ordem — como "bolhas" que sobem até a posiçã
 **Sprint:** Estagiário — Ordenador da Fila  
 **Estimativa:** 2h 15m  
 **Prioridade:** Média  
-**Tópico da trilha:** Fase 1 — Fundamentos › Algoritmos de ordenação (bubble sort, selection sort) (1/3)
 
 ---
 
@@ -62,10 +61,7 @@ npm test
 
 ### Dicas (tente sozinho antes de usar)
 
-> 📘 Ainda sem noção de por onde começar? Revise o **Tópico 9 — Algoritmos de ordenação (bubble sort, selection sort)**
-> em [`09-algoritmos-de-ordenacao.md`](../../../aulas/fase-01-fundamentos-de-programacao/09-algoritmos-de-ordenacao.md) — tem explicação, exemplo e um
-> exercício pra treinar antes de tentar aqui. Também dá pra ler dentro
-> do simulador, tecla `[5]` (Trilha de Estudos).
+> 📘 Ainda sem noção de por onde começar? Pesquise **Algoritmos de ordenação (bubble sort, selection sort)** na [documentação da MDN](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide) ou no [W3Schools](https://www.w3schools.com/js/) antes de tentar aqui.
 
 **Antes de tudo:** copie o array recebido pra uma variável nova (`[...numeros]`) e
 trabalhe nessa cópia — assim você não altera o array original.

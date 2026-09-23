@@ -19,8 +19,7 @@ Telas disponíveis no menu:
 2. **Painel de Sprint** — board de tarefas interativo com input de comandos
 3. **Ficha do Desenvolvedor** — nível, score, salário, avisos de desempenho
 4. **Quadro de Projetos** — todos os projetos com status
-5. **Trilha de Estudos** — currículo com scroll por ↑↓
-6. **GitHub (simulado)** — Issues, Pull Requests, Actions, Commits e README
+5. **GitHub (simulado)** — Issues, Pull Requests, Actions, Commits e README
 
 Fora do menu, dois interstícios disparam sozinhos: o **Daily Standup** (1x por dia
 real, antes do menu) e o **1:1 com o Tech Lead** (a cada 3 projetos entregues).
@@ -45,22 +44,16 @@ scripts/
 │   └── texto.js               quebra de linha, parser de markdown do README
 ├── telas/                ← uma tela do menu = um arquivo (build + handle da tecla)
 │   ├── menu.js  empresa.js  sprint.js  dev.js  revisao1a1.js
-│   └── projetos.js  aulas.js  github.js  standup.js
+│   └── projetos.js  github.js  standup.js
 └── reset.js               ← `npm run resetar`
 .devtech/
 ├── progress.json       ← score, nome, avisos, atrasos (não edite manualmente)
 ├── sprint.json         ← estado da sprint ativa
 └── messages.json       ← histórico de mensagens dos NPCs
-AULAS.md                 ← índice da trilha (14 fases) — fica na RAIZ, de propósito: é
-                           documentação pra ler direto (editor/GitHub), não dado interno
-                           do jogo. AULAS_FILE em core/dados.js aponta pra cá.
-aulas/                    ← conteúdo completo por tópico, um .md por tópico, dentro de
-                           `fase-NN-slug/` (só a Fase 1 tem essa pasta por enquanto — ver
-                           AULAS_DIR/pastaDaFase() em core/dados.js e telas/aulas.js)
 .github/
 └── copilot-instructions.md  ← configura Copilot como QA Ana
 projects/
-├── estagiario/         ← 32 mini-projetos + 1 bônus (Fase 1 do AULAS.md — ver seção abaixo)
+├── estagiario/         ← 32 mini-projetos + 1 bônus (Fase 1 — ver "Currículo por fase" abaixo)
 ├── trainee/            ← aguardando (Fase 2 — ainda não construída)
 ├── junior-1/           ← aguardando (Fase 3)
 ├── junior-2/           ← aguardando (Fase 5)
@@ -113,6 +106,65 @@ tarefas) — cada projeto do lote é uma unidade só, sem sub-tarefas dentro del
 
 ---
 
+## Currículo por fase (referência interna — não é mais exposta ao usuário)
+
+Até 2026-09 este currículo vivia em `AULAS.md` + `aulas/`, lido pelo usuário dentro
+do simulador (tela "Trilha de Estudos") ou direto no editor. Foi removido a pedido do
+usuário: a documentação da MDN e do W3Schools já cobre a explicação de cada conceito,
+então não fazia sentido manter conteúdo pedagógico duplicado dentro do repositório. A
+lista de fases/tópicos abaixo continua existindo só como **referência interna do
+Claude Code** pra saber quantos tópicos cada fase tem na hora de criar os projetos do
+próximo nível (ver "Plano: trilha completa por fase" logo abaixo) — o usuário não
+precisa mais ler isso, e os READMEs de projeto não apontam mais pra cá.
+
+- **Fase 1 — Fundamentos de Programação** (Estagiário, `projects/estagiario/`, já
+  construída): lógica/pseudocódigo, variáveis/tipos/operadores, condicionais,
+  repetição, funções, arrays, objetos, recursão, ordenação, busca (10 tópicos).
+- **Fase 2 — JavaScript Moderno / ES6+** (Trainee): arrow functions, destructuring,
+  spread/rest, template literals, módulos (import/export), Promises, async/await,
+  closures/escopo/hoisting, event loop, try/catch/throw, iteradores/generators,
+  POO com `class` (os 4 pilares), herança/`extends`/`super`/campos privados,
+  composição vs. herança.
+- **Fase 3 — Ferramentas do Desenvolvedor** (Junior I): terminal, Git (init/add/
+  commit/push/pull, branches/merge, rebase/cherry-pick), npm, debugging, Jest
+  (estrutura, mocks/spies/cobertura), qualidade de software e mentalidade de QA,
+  currículo/portfólio, GitHub/LinkedIn como vitrine, entrevista técnica júnior.
+- **Fase 4 — Frontend: HTML e CSS** (nível a mapear): HTML semântico, seletores/
+  especificidade, box model, Flexbox, Grid, responsivo, animações, variáveis CSS,
+  UX (heurísticas), UI (hierarquia/tipografia/cor), prototipação, design systems.
+- **Fase 5 — Frontend: JavaScript no Browser** (Junior II, adaptado pra Node.js):
+  DOM, eventos, formulários, Fetch API, LocalStorage/SessionStorage/Cookies, Web
+  APIs (Intersection/Resize Observer), performance no browser.
+- **Fase 6 — React** (Junior III, adaptado pra JS puro): JSX/componentes, props,
+  useState, useEffect, renderização condicional/listas, formulários controlados,
+  composição, useContext, useReducer, useMemo/useCallback, custom hooks, React
+  Router, Zustand, testes de componentes.
+- **Fase 7 — Node.js e Backend Fundamentals** (Pleno I): módulos nativos (fs/path/
+  events), HTTP, servidor HTTP puro, Express (rotas/middlewares), design de REST
+  API, validação (Zod/Joi), tratamento global de erros, upload (Multer), dotenv,
+  CORS.
+- **Fase 8 — Banco de Dados** (Pleno II): modelagem/DER/normalização, SQL (CRUD,
+  JOINs, subqueries), PostgreSQL, Prisma (schema/migrations/queries/relações),
+  transações, índices, MongoDB, Mongoose, Redis.
+- **Fase 9 — Autenticação e Segurança** (Pleno III, parte 1): sessões vs. tokens,
+  JWT, bcrypt, OAuth2, OWASP Top 10, XSS, SQL Injection, rate limiting, HTTPS/TLS.
+- **Fase 10 — Arquitetura e Boas Práticas** (Pleno III, parte 2): requisitos/user
+  stories, UML, Clean Code, SOLID, Design Patterns, MVC, camadas, Clean
+  Architecture, CQRS, versionamento de API, Swagger/OpenAPI.
+- **Fase 11 — Testes Avançados** (Sênior I, parte 1): pirâmide de testes,
+  integração com banco real, TDD, e2e (Playwright/Cypress), carga (k6), contract
+  testing (Pact).
+- **Fase 12 — DevOps e Infraestrutura** (Sênior I, parte 2): Docker, Docker
+  Compose, CI/CD (GitHub Actions), deploy (Railway/Render/VPS+PM2), Nginx, logs
+  estruturados, observabilidade.
+- **Fase 13 — Sistemas Distribuídos e Escalabilidade** (Sênior II): filas
+  (BullMQ+Redis), WebSockets/Socket.io, microservices, API gateway/service
+  discovery, event-driven architecture, caching avançado, CDN/load balancer,
+  sharding/replicação.
+- **Fase 14 — Liderança Técnica** (Sênior III): system design, ADRs, code review,
+  mentoria, estimativas, débito técnico, comunicação técnica (RFCs), segurança em
+  nível de sistema, mentalidade de produto, métricas de produto, side project.
+
 ## Plano: trilha completa por fase (para quando o usuário pedir a próxima)
 
 A Fase 1 (`projects/estagiario/`) foi reconstruída em **32 mini-projetos + 1 bônus** — 3
@@ -123,28 +175,28 @@ agora. Numa primeira versão (2026-09), mesmo com 3-por-tópico, dois projetos a
 vazavam concepto de tópico futuro (`02` e o antigo `03` exigiam `for`/`while` antes do
 tópico de repetição existir) — corrigido depois de feedback real de um usuário
 iniciante; ver item 5-A abaixo pra não repetir o erro nas próximas fases. As fases 2 a
-14 do `AULAS.md` ainda não foram reconstruídas nesse formato — os níveis correspondentes
-têm só um `README.md` placeholder ("aguardando novo cliente"). Quando o usuário pedir
-uma fase nova, repetir exatamente este processo:
+14 (ver "Currículo por fase" acima) ainda não foram reconstruídas nesse formato — os
+níveis correspondentes têm só um `README.md` placeholder ("aguardando novo cliente").
+Quando o usuário pedir uma fase nova, repetir exatamente este processo:
 
-1. **Mapear a fase → nível.** Cada fase do `AULAS.md` já tem um nível de carreira
-   correspondente na tabela `LEVELS` de `core/dados.js` (campo `fase`) — ex.: Fase 2 →
-   Trainee, Fase 3 → Junior I. Usar a pasta `projects/<folder-do-nivel>/`.
-2. **Contar os tópicos da fase** no `AULAS.md` (cada linha `- Tópico: ...` sob o
-   `## FASE N`) e multiplicar por 3 — esse é o piso do total de mini-projetos daquele
-   nível. Fases maiores (ex.: Fase 6 — React, com 14 tópicos) geram bem mais projetos que
-   a Fase 1; é esperado, não é bug. **Exceção:** se um tópico específico for o primeiro a
-   introduzir um conceito estrutural grande (ex.: o primeiro loop, a primeira classe, o
-   primeiro `async/await`), considere 4 ou 5 projetos só pra ele em vez de 3 — foi o caso
-   de "Estruturas de repetição" na Fase 1, que virou 5 depois de feedback de um usuário
+1. **Mapear a fase → nível.** Cada fase de "Currículo por fase" já tem um nível de
+   carreira correspondente na tabela `LEVELS` de `core/dados.js` (campo `fase`) —
+   ex.: Fase 2 → Trainee, Fase 3 → Junior I. Usar a pasta `projects/<folder-do-nivel>/`.
+2. **Contar os tópicos da fase** em "Currículo por fase" acima e multiplicar por 3 —
+   esse é o piso do total de mini-projetos daquele nível. Fases maiores (ex.: Fase 6 —
+   React, com 14 tópicos) geram bem mais projetos que a Fase 1; é esperado, não é bug.
+   **Exceção:** se um tópico específico for o primeiro a introduzir um conceito
+   estrutural grande (ex.: o primeiro loop, a primeira classe, o primeiro
+   `async/await`), considere 4 ou 5 projetos só pra ele em vez de 3 — foi o caso de
+   "Estruturas de repetição" na Fase 1, que virou 5 depois de feedback de um usuário
    real achando a virada abrupta demais.
 3. **Numerar linearmente** `01` a `NN` dentro da pasta do nível (mesma decisão já tomada
    pro usuário na Fase 1 — sem subpasta por tópico).
 4. **Nomear as pastas como projeto real da empresa**, nunca com nome de tópico
    pedagógico — ex. `08-validador-sensor-estacionamento`, não `08-condicionais`. O README
    de cada um é que carrega o contexto de negócio (bug fix / feature / refactor pedido por
-   um cliente/setor fictício da DevTech) e a linha **`Tópico da trilha:`** dizendo qual
-   tópico da fase aquele projeto pratica e a posição dele na trilha (`(2/3)` etc).
+   um cliente/setor fictício da DevTech) — não precisa mais de uma linha "Tópico da
+   trilha" numerada, já que não existe mais um índice pro usuário navegar.
 5. **Progressão dentro de cada trio (ou quinteto) de tópico:** o primeiro projeto
    introduz o conceito isolado com a menor superfície possível; os do meio aprofundam; o
    último mistura com o que já foi visto nos tópicos anteriores da mesma fase (nunca com
@@ -161,45 +213,32 @@ uma fase nova, repetir exatamente este processo:
    certo. Isso já causou dois projetos com `for`/`while` escondido na Fase 1 antes do
    tópico de repetição existir — pego só quando um usuário iniciante de verdade tentou
    os projetos em ordem.
-6. **Criar `aulas/fase-NN-slug/` com um `.md` por tópico** (mesmo padrão da Fase 1 em
-   `aulas/fase-01-fundamentos-de-programacao/`) — documentação de verdade, não lista de
-   bullets: pra cada tópico, uma explicação acessível pra quem ainda não viu o assunto,
-   um exemplo pequeno e rodável, um segundo exemplo num cenário parecido com os projetos
-   da DevTech (domínio diferente do exercício, nunca a resposta pronta), um "Tente
-   você", os erros mais comuns, e a lista dos projetos onde aquele tópico aparece.
-   Arquivo numerado (`01-slug.md`, `02-slug.md`...) + um `README.md` na pasta com os
-   links pros tópicos (`aulas/fase-01.../README.md` é o modelo). Depois, no `AULAS.md`
-   da raiz, trocar a lista de bullets daquela fase por uma lista de links pros arquivos
-   novos (mesmo formato da seção "FASE 1" do `AULAS.md` atual) — `pastaDaFase()` em
-   `scripts/telas/aulas.js` acha a pasta sozinha pelo prefixo `fase-NN-`, sem precisar
-   mexer em código. Isso é o que transforma **[5] Trilha de Estudos** de índice em
-   material de estudo de verdade — sem isso, a Dica do README fica pedindo um conceito
-   que o dev nunca viu explicado em lugar nenhum.
-7. **Todo README segue o template já usado**: Contexto → Nível/Sprint/Estimativa/
-   Prioridade/Tópico da trilha → O que fazer (checklist) → Arquivo a criar → Especificação
+6. **Todo README segue o template já usado**: Contexto → Nível/Sprint/Estimativa/
+   Prioridade → O que fazer (checklist) → Arquivo a criar → Especificação
    das funções → Como testar → Dicas → Tarefas sugeridas para o Sprint (bloco
    ` ```add ...``` `, uma linha por tarefa — popula o backlog sozinho via
-   `extrairTarefas()`). A seção de Dicas abre com uma citação (`>`) linkando pro arquivo
-   do tópico correspondente em `aulas/fase-NN.../` (ver os 32 READMEs do Estagiário como
-   referência do formato exato do link) e, pra cada função, um hint — nunca a resposta
+   `extrairTarefas()`). A seção de Dicas abre com uma citação (`>`) apontando pra MDN
+   (`developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide`) e/ou W3Schools
+   (`w3schools.com/js/`) pro conceito daquele projeto (ver os 33 READMEs do Estagiário
+   como referência do formato exato) e, pra cada função, um hint — nunca a resposta
    pronta, mas com um exemplo **genérico** (domínio diferente do exercício) sempre que o
    conceito novo não tiver sintaxe óbvia só pela descrição em prosa.
-8. **Todo projeto precisa de teste real (Jest) e passar de fato.** Antes de considerar o
+7. **Todo projeto precisa de teste real (Jest) e passar de fato.** Antes de considerar o
    nível pronto, escrever uma implementação de referência (fora do repositório, ex. numa
    pasta de sandbox) e rodar `npm test` contra os specs de cada mini-projeto — é assim que
    a Fase 1 pegou um bug de spec (função que dependia de campo não calculado ainda) antes
    de chegar no usuário. Specs ambíguos custam caro pra quem está aprendendo.
-9. **`estimativaHoras` sempre no formato `Xh Ym`, com no mínimo `1h`** no README
+8. **`estimativaHoras` sempre no formato `Xh Ym`, com no mínimo `1h`** no README
    (`parseEstimativaTexto` exige um dígito de hora — `1h 30m` funciona, `30m` sozinho
    não; o código também aplica um piso de 1h em `distribuirNovoLote`, mas o README já
    deve nascer certo). Cresce com a complexidade: os primeiros projetos da fase ficam
    perto de `1h`, o integrador final é o mais alto do nível.
-10. **Prazo de calendário não é mais por projeto nem por nível** — é do **lote** (1 a 3
-    projetos que o QA junta na sprint): 3 dias pra lote de 1, 7 pra lote de 2, 15 pra
-    lote de 3 ou qualquer lote com o integrador (`prazoLotePara()` em
-    `scripts/telas/sprint.js`). Não precisa de nada especial no README pra isso — é
-    calculado sozinho a partir de quantos projetos caem juntos no lote.
-11. Ao terminar o nível, atualizar `README.md` (se algo do fluxo mudou), `UPDATES.md`
+9. **Prazo de calendário não é mais por projeto nem por nível** — é do **lote** (1 a 3
+   projetos que o QA junta na sprint): 3 dias pra lote de 1, 7 pra lote de 2, 15 pra
+   lote de 3 ou qualquer lote com o integrador (`prazoLotePara()` em
+   `scripts/telas/sprint.js`). Não precisa de nada especial no README pra isso — é
+   calculado sozinho a partir de quantos projetos caem juntos no lote.
+10. Ao terminar o nível, atualizar `README.md` (se algo do fluxo mudou), `UPDATES.md`
    (uma linha curta) e remover o placeholder "aguardando novo cliente" daquele nível.
 
 ---
@@ -294,7 +333,7 @@ O lote da sprint (1 a 3 projetos) é montado sozinho pelo QA — não existe mai
 
 ---
 
-## Níveis e fases das aulas
+## Níveis e fases do currículo (mapeamento nível → fase)
 
 - **Estagiário** → Fase 1 (Fundamentos)
 - **Trainee** → Fase 2 (ES6+)

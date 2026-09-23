@@ -17,7 +17,6 @@ trocas de posição no total.
 **Sprint:** Estagiário — Otimizador de Ordenação  
 **Estimativa:** 2h 30m  
 **Prioridade:** Média  
-**Tópico da trilha:** Fase 1 — Fundamentos › Algoritmos de ordenação (bubble sort, selection sort) (2/3)
 
 ---
 
@@ -63,10 +62,7 @@ npm test
 
 ### Dicas (tente sozinho antes de usar)
 
-> 📘 Ainda sem noção de por onde começar? Revise o **Tópico 9 — Algoritmos de ordenação (bubble sort, selection sort)**
-> em [`09-algoritmos-de-ordenacao.md`](../../../aulas/fase-01-fundamentos-de-programacao/09-algoritmos-de-ordenacao.md) — tem explicação, exemplo e um
-> exercício pra treinar antes de tentar aqui. Também dá pra ler dentro
-> do simulador, tecla `[5]` (Trilha de Estudos).
+> 📘 Ainda sem noção de por onde começar? Pesquise **Algoritmos de ordenação (bubble sort, selection sort)** na [documentação da MDN](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide) ou no [W3Schools](https://www.w3schools.com/js/) antes de tentar aqui.
 
 **`indiceDoMenor`** — Comece assumindo que o menor é o de `apartirDe`, e percorra o
 resto do array comparando — sempre que achar um valor menor, atualiza o índice guardado.
