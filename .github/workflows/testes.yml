@@ -87,18 +87,23 @@ jobs:
 
             echo "| $icone | \`$slug\` | $linha |" >> "$GITHUB_STEP_SUMMARY"
 
-            if [ "$exit_code" -ne 0 ]; then
-              {
-                echo ""
-                echo "<details><summary>Log de <code>$slug</code> (falhou) — clique pra ver</summary>"
-                echo ""
-                echo '```'
-                cat "$RUNNER_TEMP/saida.log"
-                echo '```'
-                echo "</details>"
-                echo ""
-              } >> "$GITHUB_STEP_SUMMARY"
+            if [ "$exit_code" -eq 0 ]; then
+              aberto=""
+              titulo="o que foi testado"
+            else
+              aberto=" open"
+              titulo="o que errou"
             fi
+            {
+              echo ""
+              echo "<details$aberto><summary>$icone <code>$slug</code> — $titulo (log completo, igual sairia no terminal)</summary>"
+              echo ""
+              echo '```'
+              cat "$RUNNER_TEMP/saida.log"
+              echo '```'
+              echo "</details>"
+              echo ""
+            } >> "$GITHUB_STEP_SUMMARY"
           done < <(find "projects/$NIVEL" -mindepth 2 -maxdepth 2 -name package.json -exec dirname {} \; | sort)
 
           {
