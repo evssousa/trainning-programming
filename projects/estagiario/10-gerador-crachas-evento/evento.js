@@ -1,7 +1,7 @@
 function numerosDosCrachas(quantidade) {
     let arr = []
 
-    if (numerosDosCrachas(quantidade) > 0 && numerosDosCrachas(quantidade) <= 4) {
+    if (quantidade > 0 && quantidade <= 4) {
         for (let i = 1; i < quantidade; i++) {
             arr.push(i)
         }
