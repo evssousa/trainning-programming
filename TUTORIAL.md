@@ -238,7 +238,7 @@ mandou pra revisão) só fica gravado em disco de verdade com
 **Quando o lote inteiro é entregue, o próximo já entra sozinho** — de 1 a 3
 projetos novos, na ordem da trilha. Não precisa pedir nada.
 
-Dá uma olhada em **[6] GitHub (simulado)** no menu — o projeto `1` aparece
+Dá uma olhada em **[5] GitHub (simulado)** no menu — o projeto `1` aparece
 como **Issue #1 CLOSED**, o `revisar 1` que você deu virou **Pull Request
 #1 MERGEADO**, e o `concluir` que acabou de rodar aparece na aba
 **Actions** como um workflow `success`. Dá pra ver o **README** do projeto
@@ -270,9 +270,8 @@ Quando quiser conferir se o QA já respondeu o projeto que ficou esperando,
 pra ele, ele continua no board.
 
 **Se todo o lote travar no QA ao mesmo tempo** (nada pra iniciar, nada
-aprovado esperando `concluir`), o painel avisa e sugere ir pra
-**[5] Trilha de Estudos** — é uma boa hora pra estudar em vez de ficar só
-esperando.
+aprovado esperando `concluir`), o painel avisa — é uma boa hora pra
+revisar o conceito na MDN/W3Schools em vez de ficar só esperando.
 
 ---
 
@@ -319,8 +318,8 @@ condicionais, loops, funções, arrays, objetos, recursão, ordenação, busca) 
 **Estruturas de repetição**, que tem 5: é o maior salto conceitual da fase (a primeira
 vez que "repetir uma ação" deixa de ser escrever a mesma linha à mão), então fica
 dividido em passos menores. Os primeiros projetos são bem curtos, e a dificuldade cresce
-aos poucos — nenhum projeto pede um conceito que o tópico dele ainda não ensinou. O
-README de cada um diz, na linha **"Tópico da trilha"**, qual assunto ele pratica.
+aos poucos — nenhum projeto pede um conceito que ainda não apareceu antes. A seção
+"Dicas" do README de cada um aponta pra MDN/W3Schools quando o assunto for novo.
 O projeto `32-integrador-fase1` usa conceitos de todos os anteriores.
 Quando todos estiverem `[ENTREGUE]` (incluindo o bônus `33` abaixo), você promove pro
 próximo nível — a promoção depende de terminar a trilha inteira, não de um número de

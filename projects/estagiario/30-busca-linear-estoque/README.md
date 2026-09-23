@@ -15,7 +15,6 @@ dificultando o uso. Você vai criar o módulo de busca do zero com algoritmos co
 **Sprint:** Estagiário — Buscador de Estoque  
 **Estimativa:** 2h 30m  
 **Prioridade:** Média  
-**Tópico da trilha:** Fase 1 — Fundamentos › Algoritmos de busca (linear e binária) (1/2) — e reforça ordenação
 
 ---
 
@@ -71,10 +70,7 @@ npm test
 
 ### Dicas (tente sozinho antes de usar)
 
-> 📘 Ainda sem noção de por onde começar? Revise o **Tópico 10 — Algoritmos de busca (linear e binária)**
-> em [`10-algoritmos-de-busca.md`](../../../aulas/fase-01-fundamentos-de-programacao/10-algoritmos-de-busca.md) — tem explicação, exemplo e um
-> exercício pra treinar antes de tentar aqui. Também dá pra ler dentro
-> do simulador, tecla `[5]` (Trilha de Estudos).
+> 📘 Ainda sem noção de por onde começar? Pesquise **Algoritmos de busca (linear e binária)** na [documentação da MDN](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide) ou no [W3Schools](https://www.w3schools.com/js/) antes de tentar aqui.
 
 **`buscaLinear`** — Use `for` ou `while`. A cada iteração compare o nome do produto com o parâmetro (ambos em lowercase). Quando encontrar, retorne o produto. Se terminar sem encontrar, retorne `null`.
 

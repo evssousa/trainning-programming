@@ -4,13 +4,11 @@ const { SPIN } = require('./ansi');
 const { horaAtual } = require('./dados');
 
 const APP = {
-  screen:    'menu',    // menu | empresa | sprint | dev | projetos | aulas | github
+  screen:    'menu',    // menu | empresa | sprint | dev | projetos | github
   menuSel:   0,
   frame:     0,
   inputBuf:  '',
   lastFb:    null,      // sprint feedback
-  aulasScroll: 0,
-  aulaLines: [],
   projetosScroll: 0,
   projView: 'list',        // list | readme
   projIndice: [],
@@ -35,8 +33,7 @@ const MENU_ITEMS = [
   { key:'2', label:'Painel de Sprint',          desc:'Gerencie tarefas e cronometro'    },
   { key:'3', label:'Ficha do Desenvolvedor',    desc:'Nivel, score, salario e historico'   },
   { key:'4', label:'Quadro de Projetos',        desc:'Missoes disponiveis e progresso'  },
-  { key:'5', label:'Trilha de Estudos',         desc:'14 fases ate Senior III'          },
-  { key:'6', label:'GitHub (simulado)',         desc:'Issues, PRs, Actions, Commits e README'  },
+  { key:'5', label:'GitHub (simulado)',         desc:'Issues, PRs, Actions, Commits e README'  },
 ];
 
 function spin(o=0) { return SPIN[(APP.frame+o) % SPIN.length]; }

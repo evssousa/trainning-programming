@@ -1,5 +1,22 @@
 # Atualizações
 
+## 2026-09-22
+- 🔨 **Trilha de Estudos removida** — `AULAS.md`, a pasta `aulas/` e a tela `[5]
+  Trilha de Estudos` do simulador saíram do repositório. Motivo: a documentação da
+  MDN e do W3Schools já cobre os mesmos conceitos, então manter conteúdo
+  pedagógico próprio virou duplicação sem necessidade. A linha "Tópico da trilha"
+  saiu do README de todos os 33 projetos do Estagiário, e a seção "Dicas" de cada
+  um agora aponta direto pra MDN/W3Schools em vez de linkar pro `aulas/*.md`
+  correspondente. O menu principal ficou com 5 itens (GitHub simulado virou `[5]`).
+  O currículo por fase (2 a 14) continua existindo como referência interna em
+  `docs/plan.md`, só não é mais lido pelo usuário — serve só pro Claude Code saber
+  quantos tópicos cada fase futura tem na hora de criar os próximos níveis.
+- 🔨 **Workflow de CI (`npm test` via GitHub Actions)** adicionado em
+  `.github/workflows/testes.yml` — pra quem só tem o vscode.dev (sem terminal,
+  sem Codespaces): dá pra implementar um projeto, commitar/dar push pelo painel
+  Source Control, e conferir na aba Actions do GitHub se os testes passaram, sem
+  precisar rodar `npm test` localmente.
+
 ## 2026-09-16 (2)
 - 🔁 **XP renomeado para "score"**: já que a pontuação não decide mais promoção de
   nível (ver entrada anterior), ela vira o que sempre devia ter sido — um placar

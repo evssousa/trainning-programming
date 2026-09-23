@@ -17,7 +17,6 @@ aprender variáveis chiques ou estruturas complexas.
 **Sprint:** Estagiário — Passo a Passo da Cozinha  
 **Estimativa:** 1h  
 **Prioridade:** Baixa  
-**Tópico da trilha:** Fase 1 — Fundamentos › Lógica de programação: algoritmos e pseudocódigo (2/3)
 
 ---
 
@@ -69,10 +68,7 @@ npm test
 
 ### Dicas (tente sozinho antes de usar)
 
-> 📘 Ainda sem noção de por onde começar? Revise o **Tópico 1 — Lógica de programação: algoritmos e pseudocódigo**
-> em [`01-logica-algoritmos-pseudocodigo.md`](../../../aulas/fase-01-fundamentos-de-programacao/01-logica-algoritmos-pseudocodigo.md) — tem explicação, exemplo e um
-> exercício pra treinar antes de tentar aqui. Também dá pra ler dentro
-> do simulador, tecla `[5]` (Trilha de Estudos).
+> 📘 Ainda sem noção de por onde começar? Pesquise **Lógica de programação: algoritmos e pseudocódigo** na [documentação da MDN](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide) ou no [W3Schools](https://www.w3schools.com/js/) antes de tentar aqui.
 
 **`montarPasso`** — Igual à concatenação do projeto anterior, só que agora um dos
 valores é um número. JavaScript converte o número pra texto sozinho quando você usa `+`
@@ -95,7 +91,7 @@ function montarSanduiche(pao, recheio, molho) {
 Repare que não precisou de nenhum jeito especial de "repetir" — são só 3 linhas na ordem
 certa. Quando o número de passos não for sempre o mesmo (imagine um sanduíche com uma
 lista de ingredientes de tamanho variável), aí sim vai precisar de uma estrutura de
-repetição — isso é o Tópico 4, mais pra frente na trilha.
+repetição — isso vem em projetos mais pra frente.
 
 **`resumoDoPedido`** — Mesma ideia de concatenar várias partes numa string só, só que
 juntando mais pedaços dessa vez. Cuidado com os espaços e a vírgula entre as palavras.

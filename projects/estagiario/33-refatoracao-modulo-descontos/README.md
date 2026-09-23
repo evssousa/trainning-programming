@@ -22,9 +22,6 @@ consertar sem quebrar mais nada, e deixar melhor do que encontrou.
 **Sprint:** Estagiário — Manutenção e Refatoração
 **Estimativa:** 2h 30m  
 **Prioridade:** Alta (chamado de cliente)
-**Tópico da trilha:** Fase 1 — pratica funções, condicionais e (o assunto principal
-aqui) **manutenção de código existente**, que não é um tópico numerado da trilha mas
-é parte do dia a dia
 
 ---
 
@@ -63,13 +60,11 @@ aqui) **manutenção de código existente**, que não é um tópico numerado da 
 ### Dicas (tente sozinho antes de usar)
 
 > 📘 Esse projeto pratica funções e condicionais — se algum dos dois ainda não
-> fez sentido, revise o
-> [Tópico 5 — Funções](../../../aulas/fase-01-fundamentos-de-programacao/05-funcoes-parametros-retorno-escopo.md)
-> ou o
-> [Tópico 3 — Condicionais](../../../aulas/fase-01-fundamentos-de-programacao/03-estruturas-condicionais.md)
-> (ou tecla `[5]` no simulador) antes de mexer no `legado.js`. O assunto
-> principal aqui — manutenção de código existente — não tem tópico numerado,
-> é prática mesmo.
+> fez sentido, revise **funções** e **estruturas condicionais** na
+> [documentação da MDN](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide)
+> ou no [W3Schools](https://www.w3schools.com/js/) antes de mexer no `legado.js`.
+> O assunto principal aqui — manutenção de código existente — é prática mesmo,
+> não tem atalho de leitura.
 
 **Achando o bug** — Não saia editando direto. Abra os três blocos (`bronze`,
 `prata`, `ouro`) lado a lado e compare os números um a um contra a

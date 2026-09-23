@@ -17,7 +17,6 @@ maior entre dois valores. Mais uma rodada de condicionais, agora sobre números.
 **Sprint:** Estagiário — Verificador de Vagas  
 **Estimativa:** 1h 30m  
 **Prioridade:** Baixa  
-**Tópico da trilha:** Fase 1 — Fundamentos › Estruturas condicionais (if, else, switch) (2/3)
 
 ---
 
@@ -66,10 +65,7 @@ npm test
 
 ### Dicas (tente sozinho antes de usar)
 
-> 📘 Ainda sem noção de por onde começar? Revise o **Tópico 3 — Estruturas condicionais (if, else, switch)**
-> em [`03-estruturas-condicionais.md`](../../../aulas/fase-01-fundamentos-de-programacao/03-estruturas-condicionais.md) — tem explicação, exemplo e um
-> exercício pra treinar antes de tentar aqui. Também dá pra ler dentro
-> do simulador, tecla `[5]` (Trilha de Estudos).
+> 📘 Ainda sem noção de por onde começar? Pesquise **Estruturas condicionais (if, else, switch)** na [documentação da MDN](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide) ou no [W3Schools](https://www.w3schools.com/js/) antes de tentar aqui.
 
 **`ehParOuImpar`** — Reaproveita a mesma ideia do operador `%` que você já usou no
 projeto da calculadora.

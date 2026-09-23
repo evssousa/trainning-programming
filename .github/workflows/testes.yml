@@ -1,0 +1,52 @@
+name: Testes dos projetos
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+  workflow_dispatch:
+
+concurrency:
+  group: testes-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  detectar-projetos:
+    name: Detectar projetos com testes
+    runs-on: ubuntu-latest
+    outputs:
+      projetos: ${{ steps.listar.outputs.projetos }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Listar projetos com package.json
+        id: listar
+        run: |
+          projetos=$(find projects -mindepth 2 -maxdepth 2 -name package.json -exec dirname {} \; \
+            | sort | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "projetos=$projetos" >> "$GITHUB_OUTPUT"
+
+  testar-projeto:
+    name: "Testes: ${{ matrix.projeto }}"
+    needs: detectar-projetos
+    if: needs.detectar-projetos.outputs.projetos != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        projeto: ${{ fromJson(needs.detectar-projetos.outputs.projetos) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar dependências
+        working-directory: ${{ matrix.projeto }}
+        run: npm install
+
+      - name: Rodar testes
+        working-directory: ${{ matrix.projeto }}
+        run: npm test

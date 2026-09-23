@@ -15,7 +15,6 @@ que sobreviveram no repositório. Tech Lead já deixou os testes prontos — é 
 **Sprint:** Estagiário — Calculadora Financeira  
 **Estimativa:** 2h  
 **Prioridade:** Alta  
-**Tópico da trilha:** Fase 1 — Fundamentos › Funções: parâmetros, retorno e escopo (3/3)
 
 ---
 
@@ -83,10 +82,7 @@ npm test
 
 ### Dicas (tente sozinho antes de usar)
 
-> 📘 Ainda sem noção de por onde começar? Revise o **Tópico 5 — Funções: parâmetros, retorno e escopo**
-> em [`05-funcoes-parametros-retorno-escopo.md`](../../../aulas/fase-01-fundamentos-de-programacao/05-funcoes-parametros-retorno-escopo.md) — tem explicação, exemplo e um
-> exercício pra treinar antes de tentar aqui. Também dá pra ler dentro
-> do simulador, tecla `[5]` (Trilha de Estudos).
+> 📘 Ainda sem noção de por onde começar? Pesquise **Funções: parâmetros, retorno e escopo** na [documentação da MDN](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide) ou no [W3Schools](https://www.w3schools.com/js/) antes de tentar aqui.
 
 **`calcularJuros`** — Se o valor cresce a cada mês sobre o resultado do mês anterior (não sobre o original), qual operador matemático faz isso acumular ao longo dos meses?
 

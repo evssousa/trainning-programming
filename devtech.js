@@ -3,7 +3,7 @@
 //
 // Ponto de entrada fino: so guarda o estado global (APP, via core/app),
 // o loop de render/teclado e o boot. Cada tela (empresa, sprint, dev,
-// projetos, aulas, github) e seus helpers compartilhados
+// projetos, github) e seus helpers compartilhados
 // (ansi, dados, lint, gitflow, texto/markdown) vivem em scripts/core e
 // scripts/telas — veja lá antes de mexer em alguma tela especifica.
 'use strict';
@@ -21,7 +21,6 @@ const { buildSprint,   handleSprintKey, checkOvertime,
         checkPrazoSprint, checkRevisoesQA }                = require('./scripts/telas/sprint');
 const { buildDev,      handleDevKey }                     = require('./scripts/telas/dev');
 const { buildProjetos, handleProjetosKey }                = require('./scripts/telas/projetos');
-const { buildAulas,    handleAulasKey }                   = require('./scripts/telas/aulas');
 const { buildGithub,   handleGithubKey }                  = require('./scripts/telas/github');
 const { buildRevisao1a1, handleRevisao1a1Key }              = require('./scripts/telas/revisao1a1');
 
@@ -37,7 +36,6 @@ function render() {
     case 'sprint':   out = buildSprint(loadSprint()); break;
     case 'dev':      out = buildDev();     break;
     case 'projetos': out = buildProjetos(); break;
-    case 'aulas':    out = buildAulas();   break;
     case 'github':   out = buildGithub();  break;
     case 'revisao1a1': out = buildRevisao1a1(); break;
   }
@@ -52,7 +50,6 @@ function goTo(screen) {
   APP.screen   = screen;
   APP.inputBuf = '';
   APP.lastFb   = null;
-  if (screen === 'aulas')    { APP.aulaLines = []; APP.aulasScroll = 0; }
   if (screen === 'projetos') { APP.projetosScroll = 0; APP.projView = 'list'; }
   if (screen === 'github')   { APP.githubScroll = 0; }
 }
@@ -83,9 +80,9 @@ process.stdin.on('data', (key) => {
 
   // Number shortcuts from menu
   const n = parseInt(key);
-  if (APP.screen === 'menu' && n >= 1 && n <= 6) {
+  if (APP.screen === 'menu' && n >= 1 && n <= 5) {
     APP.menuSel = n - 1;
-    goTo(['empresa','sprint','dev','projetos','aulas','github'][n-1]);
+    goTo(['empresa','sprint','dev','projetos','github'][n-1]);
     render(); return;
   }
 
@@ -94,7 +91,6 @@ process.stdin.on('data', (key) => {
     case 'sprint':   handleSprintKey(key); break;
     case 'dev':      handleDevKey(key); break;
     case 'projetos': handleProjetosKey(key); break;
-    case 'aulas':    handleAulasKey(key); break;
     case 'github':   handleGithubKey(key); break;
     case 'revisao1a1': handleRevisao1a1Key(key); break;
     case 'empresa':  render(); break;

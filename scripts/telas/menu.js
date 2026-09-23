@@ -11,7 +11,7 @@ const { goTo, render } = require('../core/screen');
 // ao lado do item do menu vem de estado real (nunca inventado so pra
 // puxar clique) — cada tela tem algo esperando, o menu so aponta onde.
 function badgesDoMenu(p) {
-  const b = { empresa: null, sprint: null, dev: null, projetos: null, aulas: null, github: null };
+  const b = { empresa: null, sprint: null, dev: null, projetos: null, github: null };
   if (APP.incAtivo) b.empresa = clr(C.red, '● incidente ativo');
   if (p.avisos > 0) b.dev = clr(C.yellow, `⚠ ${p.avisos} aviso(s)`);
 
@@ -30,7 +30,7 @@ function buildMenu() {
   const next = idx < LEVELS.length - 1 ? LEVELS[idx+1] : null;
   const nivelProj = next ? contarProjetosNivel(lv.folder) : null;
   const badge = badgesDoMenu(p);
-  const badgeKey = ['empresa','sprint','dev','projetos','aulas','github'];
+  const badgeKey = ['empresa','sprint','dev','projetos','github'];
 
   let o = C.cls + C.hide;
   o += `╔${LINE}╗\n`;
@@ -68,7 +68,7 @@ function buildMenu() {
   }
   if (p.avisos > 0) o += row(`  ${clr(C.yellow,'⚠')}  Avisos de desempenho: ${clr(C.yellow,String(p.avisos))}`) + '\n';
   o += `╠${LINE}╣\n`;
-  o += row(dim(`  ↑↓  mover   Enter  entrar   1-6  atalho   Ctrl+C  sair`)) + '\n';
+  o += row(dim(`  ↑↓  mover   Enter  entrar   1-5  atalho   Ctrl+C  sair`)) + '\n';
   o += `╚${LINE}╝\n`;
   return o;
 }
@@ -76,7 +76,7 @@ function buildMenu() {
 function handleMenuKey(key) {
   if (key === '\x1b[A' || key === 'k') APP.menuSel = (APP.menuSel + MENU_ITEMS.length - 1) % MENU_ITEMS.length;
   if (key === '\x1b[B' || key === 'j') APP.menuSel = (APP.menuSel + 1) % MENU_ITEMS.length;
-  if (key === '\r') goTo(['empresa','sprint','dev','projetos','aulas','github'][APP.menuSel]);
+  if (key === '\r') goTo(['empresa','sprint','dev','projetos','github'][APP.menuSel]);
   render();
 }
 

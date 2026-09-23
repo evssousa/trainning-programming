@@ -16,15 +16,6 @@ const PROGRESS_FILE = path.join(DATA_DIR, 'progress.json');
 
 const MESSAGES_FILE = path.join(DATA_DIR, 'messages.json');
 
-// AULAS.md fica na raiz do repo (nao em .devtech/) de proposito: e
-// documentacao pra ser lida direto — no editor, no GitHub, sem precisar
-// abrir o simulador — nao um dado interno do jogo. E o indice; o conteudo
-// completo de cada fase (quando existir) mora em AULAS_DIR, um arquivo por
-// topico — ver pastaDaFase()/arquivosDeTopico() em scripts/telas/aulas.js.
-const AULAS_FILE    = path.join(ROOT, 'AULAS.md');
-
-const AULAS_DIR      = path.join(ROOT, 'aulas');
-
 const PROJECTS_DIR  = path.join(ROOT, 'projects');
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -299,4 +290,4 @@ function checkAcessoDiario() {
   return { tipo: 'falta', dias: faltados, score: penalidade };
 }
 
-module.exports = { ROOT, DATA_DIR, SPRINT_FILE, PROGRESS_FILE, MESSAGES_FILE, AULAS_FILE, AULAS_DIR, PROJECTS_DIR, NPC, MSGS_AMBIENTE, INCIDENTES, RESOLUCOES, LEVELS, getLevel, PROGRESS_DEFAULT, loadProgress, saveProgress, loadSprint, saveSprint, loadMessages, pushMessage, tempoAtivoTotal, fmtMs, horaAtual, dataAtual, contarProjetos, contarProjetosNivel, localDateStr, diasEntreDatas, checkAcessoDiario, persistirJogo, haAlteracoesNaoSalvas };
+module.exports = { ROOT, DATA_DIR, SPRINT_FILE, PROGRESS_FILE, MESSAGES_FILE, PROJECTS_DIR, NPC, MSGS_AMBIENTE, INCIDENTES, RESOLUCOES, LEVELS, getLevel, PROGRESS_DEFAULT, loadProgress, saveProgress, loadSprint, saveSprint, loadMessages, pushMessage, tempoAtivoTotal, fmtMs, horaAtual, dataAtual, contarProjetos, contarProjetosNivel, localDateStr, diasEntreDatas, checkAcessoDiario, persistirJogo, haAlteracoesNaoSalvas };

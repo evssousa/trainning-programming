@@ -17,7 +17,6 @@ dentro do outro) e loops sobre strings.
 **Sprint:** Estagiário — Relatório Visual  
 **Estimativa:** 1h 45m  
 **Prioridade:** Baixa  
-**Tópico da trilha:** Fase 1 — Fundamentos › Estruturas de repetição (for, while, do-while) (5/5)
 
 ---
 
@@ -70,10 +69,7 @@ npm test
 
 ### Dicas (tente sozinho antes de usar)
 
-> 📘 Ainda sem noção de por onde começar? Revise o **Tópico 4 — Estruturas de repetição (for, while, do-while)**
-> em [`04-estruturas-de-repeticao.md`](../../../aulas/fase-01-fundamentos-de-programacao/04-estruturas-de-repeticao.md) — tem explicação, exemplo e um
-> exercício pra treinar antes de tentar aqui. Também dá pra ler dentro
-> do simulador, tecla `[5]` (Trilha de Estudos).
+> 📘 Ainda sem noção de por onde começar? Pesquise **Estruturas de repetição (for, while, do-while)** na [documentação da MDN](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide) ou no [W3Schools](https://www.w3schools.com/js/) antes de tentar aqui.
 
 **`barra`** — Um `for` de `0` até `quantidade`, concatenando `'#'` a cada volta num
 acumulador que começa como string vazia `''`.

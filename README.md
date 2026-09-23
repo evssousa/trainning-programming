@@ -51,7 +51,7 @@ Se o simulador estiver rodando, feche-o antes para o reset ter efeito completo.
 │   │   └── texto.js       quebra de linha, parser de markdown do README
 │   ├── telas/         ← uma tela do menu = um arquivo (build + handle da tecla)
 │   │   ├── menu.js  empresa.js  sprint.js  dev.js
-│   │   └── projetos.js  aulas.js  github.js  standup.js
+│   │   └── projetos.js  github.js  standup.js
 │   └── reset.js       ← `npm run resetar`
 │
 ├── projects/
@@ -63,9 +63,6 @@ Se o simulador estiver rodando, feche-o antes para o reset ter efeito completo.
 │   └── trainee/ junior-1/ ... senior-3/   ← ainda "aguardando novo cliente"
 │
 ├── .devtech/          ← dados internos do sistema (sprint.json, progress.json...)
-│
-├── AULAS.md           ← trilha de estudos — índice + links (leia direto, sem abrir o simulador)
-├── aulas/             ← conteúdo completo por tópico (Fase 1: 1 arquivo por tópico)
 │
 └── docs/
     └── plan.md        ← guia do sistema (para o Claude)
@@ -79,12 +76,13 @@ Se o simulador estiver rodando, feche-o antes para o reset ter efeito completo.
 Estagiário → Trainee → Junior I → II → III → Pleno I → II → III → Sênior I → II → III
 ```
 
-Cada nível tem vários mini-projetos (3 por tópico da fase de estudo correspondente do
-`AULAS.md`, exceto tópicos onde a virada de conceito é maior — ex.: Estruturas de
-repetição tem 5, pra tornar a chegada do primeiro loop mais gradual) — no Estagiário são
-32, do "Hello World" até o projeto integrador final, mais 1 bônus de manutenção/refatoração.
-O último projeto de cada nível é sempre o integrador — o mais importante, mistura tudo que
-foi praticado na fase inteira.
+Cada nível tem vários mini-projetos (3 por tópico do nível correspondente, exceto tópicos
+onde a virada de conceito é maior — ex.: Estruturas de repetição tem 5, pra tornar a
+chegada do primeiro loop mais gradual) — no Estagiário são 32, do "Hello World" até o
+projeto integrador final, mais 1 bônus de manutenção/refatoração. O último projeto de
+cada nível é sempre o integrador — o mais importante, mistura tudo que foi praticado na
+fase inteira. Cada README de projeto tem os links de documentação (MDN, W3Schools) para
+os conceitos que ele pratica.
 Promoções são feitas pelo Claude (seu Tech Lead e QA) quando você conclui todos os projetos.
 
 ---
@@ -160,6 +158,29 @@ npm test      # falha até você implementar
 # ... implementa ...
 npm test      # passa = projeto resolvido
 ```
+
+---
+
+## Sem terminal? (vscode.dev)
+
+Se você só tem acesso ao **vscode.dev** (sem Codespaces, sem VSCode Desktop),
+não tem terminal — então não dá pra rodar `node devtech.js` nem `npm test`
+localmente. Nesse caso, dá pra fazer os projetos direto nas pastas (sem o
+simulador) e conferir os testes pelo **GitHub Actions**, que roda `npm test`
+de cada projeto automaticamente a cada `push`:
+
+1. No seu próprio fork/repositório (precisa de remoto — ver seção de Gitflow
+   acima), habilite as Actions uma vez em **Settings → Actions → General**
+   se elas vierem desativadas por padrão em forks.
+2. Implemente o projeto pelo editor do vscode.dev e use o painel **Source
+   Control** para fazer commit e push (sem precisar de terminal).
+3. Abra a aba **Actions** do repositório no navegador — o workflow
+   `.github/workflows/testes.yml` roda `npm install` + `npm test` de cada
+   projeto que tem `package.json` e mostra, por projeto, se passou ou falhou
+   (junto com o log completo do Jest, igual sairia no terminal).
+
+Isso não substitui o simulador (que continua sendo a forma principal de
+jogar), é só uma alternativa pra quem está travado num ambiente sem terminal.
 
 ---
 
@@ -258,7 +279,7 @@ você tem seu próprio fork, pode ir além do que o jogo confere: dar
 praticar revisão de código também — mas isso é 100% sua escolha, o
 simulador não espera nem cobra isso.
 
-## GitHub (simulado) — `[6]` no menu
+## GitHub (simulado) — `[5]` no menu
 
 Uma tela dentro do simulador que apresenta o que você já está fazendo no
 vocabulário de uma plataforma de versionamento — **não é conectada a um
@@ -301,7 +322,6 @@ Sem internet, só fica de fora o QA do Copilot e a instalação inicial.
 ---
 
 > Leia o `TUTORIAL.md` para um passo a passo do primeiro projeto.
-> Travou num projeto e a seção "Dicas" do README não foi suficiente? Leia o
-> `AULAS.md` — é a trilha de estudos completa, com explicação, exemplo e
-> exercício por tópico (não só uma lista de assuntos), e dá pra abrir direto
-> no editor, sem precisar do simulador.
+> Travou num projeto e a seção "Dicas" do README não foi suficiente? Ela
+> aponta pra MDN e W3Schools — a documentação de referência pra qualquer
+> conceito de JavaScript que o projeto pratique.
