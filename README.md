@@ -174,10 +174,14 @@ de cada projeto automaticamente a cada `push`:
    se elas vierem desativadas por padrão em forks.
 2. Implemente o projeto pelo editor do vscode.dev e use o painel **Source
    Control** para fazer commit e push (sem precisar de terminal).
-3. Abra a aba **Actions** do repositório no navegador — o workflow
-   `.github/workflows/testes.yml` roda `npm install` + `npm test` de cada
-   projeto que tem `package.json` e mostra, por projeto, se passou ou falhou
-   (junto com o log completo do Jest, igual sairia no terminal).
+3. Abra a aba **Actions** do repositório no navegador e clique na execução mais
+   recente — o workflow `.github/workflows/testes.yml` roda `npm install` +
+   `npm test` de cada projeto que tem `package.json`, um por um, e no resumo da
+   execução (a página que abre de cara, sem precisar entrar em cada job) tem
+   uma tabela com ✅/❌ de todos os projetos e o resultado do Jest de cada um —
+   dá pra ver de relance quais passaram sem abrir job por job. Clicar num job
+   específico (`Testes: projects/estagiario/NN-nome`) mostra o log completo,
+   igual sairia no terminal.
 
 Isso não substitui o simulador (que continua sendo a forma principal de
 jogar), é só uma alternativa pra quem está travado num ambiente sem terminal.

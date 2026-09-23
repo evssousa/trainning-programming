@@ -26,6 +26,8 @@ jobs:
           projetos=$(find projects -mindepth 2 -maxdepth 2 -name package.json -exec dirname {} \; \
             | sort | jq -R -s -c 'split("\n") | map(select(length > 0))')
           echo "projetos=$projetos" >> "$GITHUB_OUTPUT"
+          echo "### Projetos detectados" >> "$GITHUB_STEP_SUMMARY"
+          echo "$projetos" | jq -r '.[]' | sed 's/^/- `/;s/$/`/' >> "$GITHUB_STEP_SUMMARY"
 
   testar-projeto:
     name: "Testes: ${{ matrix.projeto }}"
@@ -43,10 +45,108 @@ jobs:
         with:
           node-version: 20
 
-      - name: Instalar dependências
+      - name: Instalar dependências e rodar testes
+        id: testes
         working-directory: ${{ matrix.projeto }}
-        run: npm install
+        run: |
+          set +e
+          { npm install && npm test -- --colors=false; } > "$RUNNER_TEMP/saida.log" 2>&1
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          set -e
+          cat "$RUNNER_TEMP/saida.log"
 
-      - name: Rodar testes
-        working-directory: ${{ matrix.projeto }}
-        run: npm test
+      - name: Registrar resultado do projeto
+        if: always()
+        run: |
+          NOME="${{ matrix.projeto }}"
+          LOG="$RUNNER_TEMP/saida.log"
+          LINHA_TESTES=$(grep -E "^Tests:" "$LOG" | sed 's/^Tests:\s*//' || true)
+          [ -n "$LINHA_TESTES" ] || LINHA_TESTES="sem resumo do Jest (falhou antes de rodar os testes — ver log do job)"
+
+          if [ "${{ steps.testes.outputs.exit_code }}" = "0" ]; then
+            STATUS="passou"; ICONE="✅"
+          else
+            STATUS="falhou"; ICONE="❌"
+          fi
+
+          SLUG=$(echo "$NOME" | tr '/.' '__')
+          mkdir -p "$RUNNER_TEMP/resultado"
+          jq -n --arg projeto "$NOME" --arg status "$STATUS" --arg resumo "$LINHA_TESTES" \
+            '{projeto: $projeto, status: $status, resumo: $resumo}' \
+            > "$RUNNER_TEMP/resultado/$SLUG.json"
+
+          {
+            echo "### $ICONE \`$NOME\`"
+            echo ""
+            echo "$LINHA_TESTES"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: resultado-${{ strategy.job-index }}
+          path: ${{ runner.temp }}/resultado/*.json
+          retention-days: 7
+
+      - name: Falhar o job se os testes falharam
+        if: always()
+        run: exit ${{ steps.testes.outputs.exit_code }}
+
+  resumo:
+    name: Resumo geral
+    needs: testar-projeto
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: resultado-*
+          path: resultados
+          merge-multiple: true
+
+      - name: Montar tabela de resultados
+        run: |
+          {
+            echo "## Resultado dos testes, por projeto"
+            echo ""
+            echo "| | Projeto | Testes |"
+            echo "|---|---|---|"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          total=0
+          passou=0
+          for f in resultados/*.json; do
+            [ -e "$f" ] || continue
+            total=$((total + 1))
+            projeto=$(jq -r '.projeto' "$f")
+            status=$(jq -r '.status' "$f")
+            resumo=$(jq -r '.resumo' "$f")
+            if [ "$status" = "passou" ]; then
+              icone="✅"; passou=$((passou + 1))
+            else
+              icone="❌"
+            fi
+            echo "| $icone | \`$projeto\` | $resumo |" >> "$GITHUB_STEP_SUMMARY"
+          done
+
+          {
+            echo ""
+            if [ "$total" -eq 0 ]; then
+              echo "**Nenhum resultado encontrado.**"
+            else
+              echo "**$passou de $total projetos passaram nos testes.**"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Falhar se algum projeto não passou
+        run: |
+          falhou=0
+          for f in resultados/*.json; do
+            [ -e "$f" ] || continue
+            status=$(jq -r '.status' "$f")
+            if [ "$status" != "passou" ]; then
+              echo "::error::Falhou: $(jq -r '.projeto' "$f")"
+              falhou=1
+            fi
+          done
+          exit $falhou
