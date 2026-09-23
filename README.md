@@ -1,7 +1,7 @@
 # DevTech Sistemas S.A.
 ### Simulador de Carreira — Engenheiro de Software Fullstack JavaScript
 
-[![Testes dos projetos](https://github.com/evssousa/trainning-programming/actions/workflows/testes.yml/badge.svg)](https://github.com/evssousa/trainning-programming/actions/workflows/testes.yml)
+[![Testes — Estagiário](https://github.com/evssousa/trainning-programming/actions/workflows/testes-estagiario.yml/badge.svg)](https://github.com/evssousa/trainning-programming/actions/workflows/testes-estagiario.yml)
 
 ---
 
@@ -176,15 +176,13 @@ de cada projeto automaticamente a cada `push`:
    se elas vierem desativadas por padrão em forks.
 2. Implemente o projeto pelo editor do vscode.dev e use o painel **Source
    Control** para fazer commit e push (sem precisar de terminal).
-3. Abra a aba **Actions** do repositório no navegador e clique na execução mais
-   recente — o workflow `.github/workflows/testes.yml` roda `npm install` +
-   `npm test` de cada projeto. Tem **um job por nível** (`Testes: estagiario`,
-   `Testes: trainee`...), não um por projeto — clique no nível que quer
-   conferir e o resumo daquele job já lista ✅/❌ e o resultado do Jest de
-   cada projeto dele (com o log completo pra quem falhou). O resumo da
-   execução (a página que abre de cara) mostra só o total por nível — pra
-   ver projeto por projeto é só entrar no job do nível. O badge no topo
-   deste README também mostra o resultado da última execução.
+3. Abra a aba **Actions** do repositório no navegador — cada nível tem seu
+   próprio workflow (`Testes — Estagiário`, e futuramente `Testes — Trainee`,
+   `Testes — Junior I`...). Escolha o do seu nível e clique na execução mais
+   recente: cada projeto aparece como um **job separado** na lista à
+   esquerda, com ✓ ou ✗. Clicar num projeto mostra o log completo do
+   `npm install` + `npm test`, igual sairia no terminal. O badge no topo
+   deste README mostra o resultado da última execução do Estagiário.
 
 Isso não substitui o simulador (que continua sendo a forma principal de
 jogar), é só uma alternativa pra quem está travado num ambiente sem terminal.

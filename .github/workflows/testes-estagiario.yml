@@ -1,0 +1,472 @@
+name: "Testes — Estagiário"
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+  workflow_dispatch:
+
+jobs:
+  p01-mensagens-onboarding:
+    name: 01-mensagens-onboarding
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/01-mensagens-onboarding
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p02-guia-preparo-pedido:
+    name: 02-guia-preparo-pedido
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/02-guia-preparo-pedido
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p03-recibo-de-venda:
+    name: 03-recibo-de-venda
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/03-recibo-de-venda
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p04-dados-cadastrais:
+    name: 04-dados-cadastrais
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/04-dados-cadastrais
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p05-calculadora-interna:
+    name: 05-calculadora-interna
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/05-calculadora-interna
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p06-conversor-tipos:
+    name: 06-conversor-tipos
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/06-conversor-tipos
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p07-classificador-idade:
+    name: 07-classificador-idade
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/07-classificador-idade
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p08-validador-sensor-estacionamento:
+    name: 08-validador-sensor-estacionamento
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/08-validador-sensor-estacionamento
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p09-sistema-cardapio-dinamico:
+    name: 09-sistema-cardapio-dinamico
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/09-sistema-cardapio-dinamico
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p10-gerador-crachas-evento:
+    name: 10-gerador-crachas-evento
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/10-gerador-crachas-evento
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p11-gerador-tabela-precos:
+    name: 11-gerador-tabela-precos
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/11-gerador-tabela-precos
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p12-monitor-eventos-sistema:
+    name: 12-monitor-eventos-sistema
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/12-monitor-eventos-sistema
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p13-troco-caixa-automatico:
+    name: 13-troco-caixa-automatico
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/13-troco-caixa-automatico
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p14-gerador-relatorio-visual:
+    name: 14-gerador-relatorio-visual
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/14-gerador-relatorio-visual
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p15-modulo-utilitarios-financeiros:
+    name: 15-modulo-utilitarios-financeiros
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/15-modulo-utilitarios-financeiros
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p16-sistema-contadores-independentes:
+    name: 16-sistema-contadores-independentes
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/16-sistema-contadores-independentes
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p17-calculadora-financeira:
+    name: 17-calculadora-financeira
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/17-calculadora-financeira
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p18-sistema-lista-compras-mercado:
+    name: 18-sistema-lista-compras-mercado
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/18-sistema-lista-compras-mercado
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p19-relatorio-estatisticas-vendas:
+    name: 19-relatorio-estatisticas-vendas
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/19-relatorio-estatisticas-vendas
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p20-processador-pedidos:
+    name: 20-processador-pedidos
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/20-processador-pedidos
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p21-catalogo-produtos-loja:
+    name: 21-catalogo-produtos-loja
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/21-catalogo-produtos-loja
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p22-avaliacao-funcionarios:
+    name: 22-avaliacao-funcionarios
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/22-avaliacao-funcionarios
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p23-cadastro-clientes-imutavel:
+    name: 23-cadastro-clientes-imutavel
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/23-cadastro-clientes-imutavel
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p24-motor-calculo-combinatorio:
+    name: 24-motor-calculo-combinatorio
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/24-motor-calculo-combinatorio
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p25-consolidador-recursivo-pedidos:
+    name: 25-consolidador-recursivo-pedidos
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/25-consolidador-recursivo-pedidos
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p26-simulador-crescimento-populacional:
+    name: 26-simulador-crescimento-populacional
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/26-simulador-crescimento-populacional
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p27-ordenador-fila-atendimento:
+    name: 27-ordenador-fila-atendimento
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/27-ordenador-fila-atendimento
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p28-otimizador-ordenacao-estoque:
+    name: 28-otimizador-ordenacao-estoque
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/28-otimizador-ordenacao-estoque
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p29-ranking-personalizavel-funcionarios:
+    name: 29-ranking-personalizavel-funcionarios
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/29-ranking-personalizavel-funcionarios
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p30-busca-linear-estoque:
+    name: 30-busca-linear-estoque
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/30-busca-linear-estoque
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p31-motor-busca-rapida-catalogo:
+    name: 31-motor-busca-rapida-catalogo
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/31-motor-busca-rapida-catalogo
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p32-integrador-fase1:
+    name: 32-integrador-fase1
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/32-integrador-fase1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
+  p33-refatoracao-modulo-descontos:
+    name: 33-refatoracao-modulo-descontos
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/estagiario/33-refatoracao-modulo-descontos
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm test
+
